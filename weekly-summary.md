@@ -1,0 +1,539 @@
+# Weekly Project Summaries
+
+## Week 1 - Project Planning and Requirements
+
+**Dates:**  
+Start:  6/22/2026
+End:  6/26/2026
+
+### Weekly Goals
+- Fill backlog with system requirements
+- Design major system components (simulation core, radar, target tracking, command logic, launchers/interceptors, and frontend connections)
+- Begin work on frontend display
+- Connect the frontend display to the backend, enable parameter passing for the system (tickrate, radar range, etc.)
+
+### Monday
+**Work Completed**
+- Created initial project design
+- Documented Epics in Jira
+- Created weekly-summary.md
+- Began working on preliminary system design and layout
+
+**Jira Items Worked On**
+| Jira ID | Title | Status |
+|---|---|---|
+| MDS-1 | Simulation Core | Added to backlog |
+| MDS-2 | Radar Detected System | Added to backlog |
+| MDS-3 | Target Tracking System | Added to backlog |
+| MDS-4 | Command and Control Logic | Added to backlog |
+| MDS-5 | Launcher and Interceptor System | Added to backlog |
+| MDS-6 | WebSocket API | Added to backlog |
+| MDS-7 | Frontend Display | Added to backlog |
+| MDS-8 | Testing and CI | Added to backlog |
+| MDS-9 | Documentation and Traceability | Added to backlog |
+
+
+**Notes / Decisions**
+- Goals for tomorrow: create main system diagram, create major sub-system diagrams, begin work on frontend display.
+
+**Blockers**
+- Struggling to make decisions on a system-wide scale, finding it difficult to plan out a large system with many components
+- Jira's language (Epics, Stories, Tasks, etc.) was unfamiliar, and I found it difficult to navigate the many tools that Jira has
+
+### Tuesday
+**Work Completed**
+- 
+
+**Jira Items Worked On**
+| Jira ID | Title | Status |
+|---|---|---|
+|  |  |  |
+
+**Notes / Decisions**
+- 
+
+**Blockers**
+- 
+
+### Wednesday
+**Work Completed**
+- 
+
+**Jira Items Worked On**
+| Jira ID | Title | Status |
+|---|---|---|
+|  |  |  |
+
+**Notes / Decisions**
+- 
+
+**Blockers**
+- 
+
+### Thursday
+**Work Completed**
+- 
+
+**Jira Items Worked On**
+| Jira ID | Title | Status |
+|---|---|---|
+|  |  |  |
+
+**Notes / Decisions**
+- 
+
+**Blockers**
+- 
+
+### Friday
+**Work Completed**
+- 
+
+**Jira Items Worked On**
+| Jira ID | Title | Status |
+|---|---|---|
+|  |  |  |
+
+**Notes / Decisions**
+- 
+
+**Blockers**
+- 
+
+### Weekly Completed Work
+- 
+- 
+- 
+
+### Tests Added
+| Requirement ID | Test Name | Result |
+|---|---|---|
+|  |  |  |
+
+### Key Decisions This Week
+
+### Challenges / Blockers This Week
+- 
+
+### Next Week
+- 
+- 
+- 
+
+---
+
+## Week 2 - Simulation Core
+
+**Dates:**  
+Start:  
+End:  
+
+### Weekly Goals
+
+### Monday
+**Work Completed**
+- 
+
+**Jira Items Worked On**
+| Jira ID | Title | Status |
+|---|---|---|
+|  |  |  |
+
+**Notes / Decisions**
+- 
+
+**Blockers**
+- 
+
+### Tuesday
+**Work Completed**
+- 
+
+**Jira Items Worked On**
+| Jira ID | Title | Status |
+|---|---|---|
+|  |  |  |
+
+**Notes / Decisions**
+- 
+
+**Blockers**
+- 
+
+### Wednesday
+**Work Completed**
+- 
+
+**Jira Items Worked On**
+| Jira ID | Title | Status |
+|---|---|---|
+|  |  |  |
+
+**Notes / Decisions**
+- 
+
+**Blockers**
+- 
+
+### Thursday
+**Work Completed**
+- 
+
+**Jira Items Worked On**
+| Jira ID | Title | Status |
+|---|---|---|
+|  |  |  |
+
+**Notes / Decisions**
+- 
+
+**Blockers**
+- 
+
+### Friday
+**Work Completed**
+- 
+
+**Jira Items Worked On**
+| Jira ID | Title | Status |
+|---|---|---|
+|  |  |  |
+
+**Notes / Decisions**
+- 
+
+**Blockers**
+- 
+
+### Weekly Completed Work
+- 
+- 
+- 
+
+### Tests Added
+| Requirement ID | Test Name | Result |
+|---|---|---|
+|  |  |  |
+
+### Key Decisions This Week
+
+### Challenges / Blockers This Week
+- 
+
+### Next Week
+- 
+- 
+- 
+
+---
+
+## Week 3 - Radar Detection System
+
+**Dates:**  
+Start:  
+End:  
+
+### Weekly Goals
+
+### Monday
+**Work Completed**
+- 
+
+**Jira Items Worked On**
+| Jira ID | Title | Status |
+|---|---|---|
+|  |  |  |
+
+**Notes / Decisions**
+- 
+
+**Blockers**
+- 
+
+### Tuesday
+**Work Completed**
+- 
+
+**Jira Items Worked On**
+| Jira ID | Title | Status |
+|---|---|---|
+|  |  |  |
+
+**Notes / Decisions**
+- 
+
+**Blockers**
+- 
+
+### Wednesday
+**Work Completed**
+- 
+
+**Jira Items Worked On**
+| Jira ID | Title | Status |
+|---|---|---|
+|  |  |  |
+
+**Notes / Decisions**
+- 
+
+**Blockers**
+- 
+
+### Thursday
+**Work Completed**
+- 
+
+**Jira Items Worked On**
+| Jira ID | Title | Status |
+|---|---|---|
+|  |  |  |
+
+**Notes / Decisions**
+- 
+
+**Blockers**
+- 
+
+### Friday
+**Work Completed**
+- 
+
+**Jira Items Worked On**
+| Jira ID | Title | Status |
+|---|---|---|
+|  |  |  |
+
+**Notes / Decisions**
+- 
+
+**Blockers**
+- 
+
+### Weekly Completed Work
+- 
+- 
+- 
+
+### Tests Added
+| Requirement ID | Test Name | Result |
+|---|---|---|
+|  |  |  |
+
+### Key Decisions This Week
+
+### Challenges / Blockers This Week
+- 
+
+### Next Week
+- 
+- 
+- 
+
+## Week 4 - Project Planning and Requirements
+
+**Dates:**  
+Start:  
+End:  
+
+### Weekly Goals
+
+### Monday
+**Work Completed**
+- 
+
+**Jira Items Worked On**
+| Jira ID | Title | Status |
+|---|---|---|
+|  |  |  |
+
+**Notes / Decisions**
+- 
+
+**Blockers**
+- 
+
+### Tuesday
+**Work Completed**
+- 
+
+**Jira Items Worked On**
+| Jira ID | Title | Status |
+|---|---|---|
+|  |  |  |
+
+**Notes / Decisions**
+- 
+
+**Blockers**
+- 
+
+### Wednesday
+**Work Completed**
+- 
+
+**Jira Items Worked On**
+| Jira ID | Title | Status |
+|---|---|---|
+|  |  |  |
+
+**Notes / Decisions**
+- 
+
+**Blockers**
+- 
+
+### Thursday
+**Work Completed**
+- 
+
+**Jira Items Worked On**
+| Jira ID | Title | Status |
+|---|---|---|
+|  |  |  |
+
+**Notes / Decisions**
+- 
+
+**Blockers**
+- 
+
+### Friday
+**Work Completed**
+- 
+
+**Jira Items Worked On**
+| Jira ID | Title | Status |
+|---|---|---|
+|  |  |  |
+
+**Notes / Decisions**
+- 
+
+**Blockers**
+- 
+
+### Weekly Completed Work
+- 
+- 
+- 
+
+### Tests Added
+| Requirement ID | Test Name | Result |
+|---|---|---|
+|  |  |  |
+
+### Key Decisions This Week
+
+### Challenges / Blockers This Week
+- 
+
+### Next Week
+- 
+- 
+- 
+
+## Week 5 - Project Planning and Requirements
+
+**Dates:**  
+Start:  
+End:  
+
+### Weekly Goals
+
+### Monday
+**Work Completed**
+- 
+
+**Jira Items Worked On**
+| Jira ID | Title | Status |
+|---|---|---|
+|  |  |  |
+
+**Notes / Decisions**
+- 
+
+**Blockers**
+- 
+
+### Tuesday
+**Work Completed**
+- 
+
+**Jira Items Worked On**
+| Jira ID | Title | Status |
+|---|---|---|
+|  |  |  |
+
+**Notes / Decisions**
+- 
+
+**Blockers**
+- 
+
+### Wednesday
+**Work Completed**
+- 
+
+**Jira Items Worked On**
+| Jira ID | Title | Status |
+|---|---|---|
+|  |  |  |
+
+**Notes / Decisions**
+- 
+
+**Blockers**
+- 
+
+### Thursday
+**Work Completed**
+- 
+
+**Jira Items Worked On**
+| Jira ID | Title | Status |
+|---|---|---|
+|  |  |  |
+
+**Notes / Decisions**
+- 
+
+**Blockers**
+- 
+
+### Friday
+**Work Completed**
+- 
+
+**Jira Items Worked On**
+| Jira ID | Title | Status |
+|---|---|---|
+|  |  |  |
+
+**Notes / Decisions**
+- 
+
+**Blockers**
+- 
+
+### Weekly Completed Work
+- 
+- 
+- 
+
+### Tests Added
+| Requirement ID | Test Name | Result |
+|---|---|---|
+|  |  |  |
+
+### Key Decisions This Week
+
+### Challenges / Blockers This Week
+- 
+
+### Next Week
+- 
+- 
+- 
+
+---
