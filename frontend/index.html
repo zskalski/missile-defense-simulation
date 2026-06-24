@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    
+    <!-- viewport is the webpage's visable area -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Missile Defense Simulator</title>
+
+    <link rel="icon" href="assets/imgs/favicon.png" type="image/png">
+
+    <!-- Style Sheets -->
+     <link rel="stylesheet" href="css/style.css">
+     
+    <!-- JavaScript Files -->
+     <script src="js/main.js" defer></script>
+
+</head>
+
+<body>
+    
+    <header>
+        <div><h1>Missile Defense Simulator</h1></div>
+        <div><a href="https://github.com/zskalski/missile-defense-simulation">GitHub Repository</a></div>
+    </header>
+    
+    <main>
+
+        <!-- Full Content Block -->
+        <article class="full-content-block">
+
+            <!-- Centered Map Area -->
+            <section class="map-area">
+
+                <canvas id="mapCanvas">
+                    Browser does not support HTML canvas tag.
+                </canvas>
+
+            </section>
+
+            <!-- Right-side Options Menu for Configs -->
+            <section class="options-menu">
+                <!--
+                    - Start / Pause / Reset Button
+                    - Spawning Menu
+                        * Click and drag:
+                            ~ Command Center (only 1)
+                            ~ Defended Asset (1 to many)
+                            ~ Radar Station (0 to many)
+                            ~ Interceptor (0 to many)
+                            ~ Hostile Missle (0 to many)
+                                - User will drag and drop missile onto map, missile will automatically calculate trajectory
+                    - Toggle automatic mode
+                    - Radar visibility slider bar
+                    - Track Visibility slider bar
+                    - Simulation speed slider bar
+                    - Background selection
+                -->
+
+                <h2> Options Menu </h2>
+
+            </section>
+
+            <!-- Bottom Information Display -->
+             <section class="information-display"> 
+
+                <!--
+                    - Event Log
+                        * EX: [00:12.400] RADAR-1 detected TGT-003
+                    - Selected Object Information
+                        * EX:
+                            ID: TGT-003
+                            Type: Hostile Missile
+                            Position: (834, 211)
+                            Velocity: 310 m/s
+                            Status: Tracked
+                            Time to Impact: 18.2s
+                    - Metrics 
+                        * System Mode (Manual/Automatic)
+                        * Simulation Time (Min/Secs)
+                        * Tick Rate 
+                        * Number of Targets
+                        * Number of Tracks
+                        * Number of Interceptors         
+                        
+                    - Alert Banner
+                        * Display status of the Alert:
+                            ~ INTERCEPT REQUIRED
+                            ~ LAUNCHER UNAVAILABLE
+                            ~ TARGET IMPACTED
+                            ~ HOSTILE MISSILE INTERCEPTED
+
+                        +---------------------------------------------------+------------------+
+                        | Event Log | Selected Object Details | System Status / Metrics       |
+                        |                             ALERT BANNER                            |
+                        +---------------------------------------------------+------------------+
+                -->
+
+                <h2> Information Display </h2>
+
+             </section>
+
+            
+        </article>
+
+    </main>
+    
+    <footer>
+
+    </footer>
+
+
+
+</body>
+
+</html>
