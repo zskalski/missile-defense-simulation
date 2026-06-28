@@ -2,7 +2,7 @@
 
 ## Simulation Core
 
-- **SC-001**	The system shall simulate a 2D operational area with width and height configured by the user.
+- **SC-001**	The system shall simulate a 2D operational area.
 - **SC-002**	The system shall maintain a central world state containing all active targets, radars, launchers, interceptors, and events.
 - **SC-003**	The system shall update the simulation using a tick rate toggleable by the user.
 - **SC-004**	The system shall track simulation time in milliseconds.
