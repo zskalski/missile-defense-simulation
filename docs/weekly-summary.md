@@ -79,6 +79,34 @@ End:  6/26/2026
 
 **Blockers**
 
+### Wednesday
+
+**Work Completed**
+
+- Created preliminary front-end in strcuture in HTML, with CSS styling and JavaScript canvas drawing (to draw squares on the map area)
+- Generated sprites for missile-to-ground impact, command center, radar tower, interceptor, and enemy missile.
+- Generated a pixel-game style map for the user to place sprites.
+
+**Jira Items Worked On**
+
+| Jira ID | Title | Status |
+| ------- | ----- | ------ |
+|    FD-001     |   The frontend shall display a 2D map of the operational area.    |    In-Progress    |
+|    FD-002    |    The frontend shall display the defended asset, radar stations, launchers, targets, and interceptors.   |    In-Progress    |
+|    FD-0009     |   The frontend shall display a menu with all configurable options of the simulation.    |    In-Progress    |
+
+**Notes / Decisions**
+- Changed SC-001 to not have the operational area (map area) configurable to the user. Instead, the map area remains fixed at a max width of 940 pixels. This decision simplies the frontend development, as the main focus of this project in on backend components and the communication between them.
+- Decided major color themes, UI/UX formatting, and sprite icons.
+
+**Blockers**
+
+### Thursday
+**N/A**
+
+### Friday
+**N/A**
+
 ### Day
 
 **Work Completed**
