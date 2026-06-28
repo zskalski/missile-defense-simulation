@@ -77,8 +77,6 @@ End:  6/26/2026
 - Utilized ChatGPT to give a starting point for system requirements, then went through each to make sure that nothing was missing or illogical. However, I kept system design decisions (like class/componenet setup) as I want to practice designing a system on my own.
 - Made major design decisions on system components, including what data they communicate.
 
-**Blockers**
-
 ### Wednesday
 
 **Work Completed**
@@ -99,13 +97,13 @@ End:  6/26/2026
 - Changed SC-001 to not have the operational area (map area) configurable to the user. Instead, the map area remains fixed at a max width of 940 pixels. This decision simplies the frontend development, as the main focus of this project in on backend components and the communication between them.
 - Decided major color themes, UI/UX formatting, and sprite icons.
 
-**Blockers**
-
 ### Thursday
 **N/A**
 
 ### Friday
 **N/A**
+
+---
 
 ### Day
 
