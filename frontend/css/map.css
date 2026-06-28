@@ -1,0 +1,24 @@
+/* Centered Map Area */
+
+.map-area {
+    min-width: 0px;
+    min-height: 0px;
+    width: 100%;
+    height: 100%;
+    width: 940px;
+    height: 940px;
+
+    border: 4px solid var(--outline);
+    background-color: var(--panel);
+    object-fit: cover; /* resizes the img to fill */
+    padding: 0;
+    margin: 0;
+}
+
+#mapCanvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}

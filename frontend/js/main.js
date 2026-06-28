@@ -23,8 +23,8 @@ function resizeCanvas() {
 function drawGrid() {
     mapContext.lineWidth = 1;
 
-    console.log(`Cell width is: ${cellWidth}`);
-    console.log(`Cell height is: ${cellHeight}`);
+    //console.log(`Cell width is: ${cellWidth}`);
+    //console.log(`Cell height is: ${cellHeight}`);
 
     // draw horizonal rows
     for (let i = 0; i <= gridRows; i++) {

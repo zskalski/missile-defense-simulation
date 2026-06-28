@@ -13,7 +13,12 @@
     <link rel="icon" href="assets/imgs/favicon.png" type="image/png">
 
     <!-- Style Sheets -->
-     <link rel="stylesheet" href="css/style.css">
+     <link rel="stylesheet" href="css/global.css">
+     <link rel="stylesheet" href="css/information-display.css">
+     <link rel="stylesheet" href="css/map.css">
+     <link rel="stylesheet" href="css/marginals.css">
+     <link rel="stylesheet" href="css/options-menu.css">
+     <link rel="stylesheet" href="css/variables.css">
      
     <!-- JavaScript Files -->
      <script src="js/main.js" defer></script>
@@ -52,15 +57,57 @@
                             ~ Radar Station (0 to many)
                             ~ Interceptor (0 to many)
                             ~ Hostile Missle (0 to many)
-                                - User will drag and drop missile onto map, missile will automatically calculate trajectory
+                                - User will drag and drop missile onto map and select target, missile will automatically calculate trajectory to target or where user entered coordinates
+                                - Single enemy missle (one red rocket)
+                                - Enemy missile barrage (several red rockets) - tests the system.
+                                - For each, user will enter the target OR enter coordinates and place it on the map. For the missile barage, they will enter how many missile they want to fire. Missiles will be fired from random edges of the map.
                     - Toggle automatic mode
                     - Radar visibility slider bar
                     - Track Visibility slider bar
                     - Simulation speed slider bar
-                    - Background selection
                 -->
+                <div class="options-menu-title">
+                    <h2> Options Menu </h2>
+                </div>
+                
+                <div class="menu-box state-controls">
+                    <div class="button-grid">
+                        <div class="sprite-button"><button class="start-button"><img src="assets/imgs/buttons/play-button.png" alt="Play"></button></div>
+                        <div class="sprite-button"><button class="pause-button"><img src="assets/imgs/buttons/pause-button.png" alt="Pause"></button></button></div>
+                        <div class="sprite-button"><button class="reset-button"><img src="assets/imgs/buttons/reset-button.png" alt="Reset"></button></button></div>
+                    </div>
 
-                <h2> Options Menu </h2>
+                </div>
+
+                <div class="menu-box spawn-menu">
+                    <p>spawn-menu</p>
+                    <div class="spawn-grid">
+                        <div class="sprite-img"><img src="assets/imgs/sprites/command-center.png" alt="Command Center" title="Command Center"></div>
+                        <div class="sprite-img"><img src="assets/imgs/sprites/radar-station.png" alt="Radar Staton" title="Radar Station"></div>
+                        <div class="sprite-img"><img src="assets/imgs/sprites/protected-target.png" alt="Protected Target" title="Protected Target"></div>
+                        <div class="sprite-img"><img src="assets/imgs/sprites/interceptor.png" alt="Interceptor" title="Interceptor"></div>
+                        <div class="sprite-img"><img src="assets/imgs/sprites/enemy-missile.png" alt="Enemy Missile" title="Enemy Missile"></div>
+                        <div class="sprite-img"><img src="assets/imgs/sprites/enemy-missile-barrage.png" alt="Enemy Missile Barrage" title="Enemy Missile Barrage"></div>
+                        <div class="sprite-img"><img src="assets/imgs/sprites/tree.png" alt="Tree" title="Tree"></div>
+                        <div class="sprite-img"><img src="assets/imgs/sprites/lake.png" alt="Lake" title="Lake"></div>
+                    </div>
+                </div>
+
+                <div class="menu-box automatic-toggle">
+                    <p>automatic-toggle</p>
+                </div>
+
+                <div class="menu-box radar-visibility">
+                    <p>radar-visibility</p>
+                </div>
+
+                <div class="menu-box track-visibility">
+                    <p>track-visibility</p>
+                </div>
+
+                <div class="menu-box simulation-speed">
+                    <p>simulation-speed</p>
+                </div>
 
             </section>
 

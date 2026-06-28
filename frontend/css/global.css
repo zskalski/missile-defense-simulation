@@ -1,0 +1,69 @@
+/* Broad HTML Tags ( <h1>, body, etc.) */
+
+body {
+    font-family: 'Warband';
+    text-shadow: 3px 3px black;
+    color: var(--text);
+
+    background: var(--metal);
+    border: 4px solid var(--metal-dark);
+    min-width: 1400px;
+    min-height: 1400px;
+}
+
+.full-content-block {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 4fr) minmax(0, 1fr);
+    row-gap: none;
+    gap: 1rem;
+    box-sizing: border-box;
+
+    height: 80dvh; /* dynamic veiwport height */
+    width: 95%;
+    max-width: 1400px;
+    max-height: 1400px;
+    min-height: 1150px;
+    min-width: auto;
+
+    padding: 20px;
+    margin-bottom: 45px;
+    
+    justify-self: center;
+    background-color: var(--metal-dark);
+    border: 8px solid var(--outline);
+}
+
+.sprite-button img{
+    height: 64px;
+    width: 64px;
+    border-radius: 20px;
+}
+
+.sprite-button img:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+}
+
+.sprite-button img:active {
+    transform: scale(0.95);
+    filter: brightness(0.8);
+    box-shadow: inset 0 0 5px black;
+}
+
+.sprite-img img{
+    height: 64px;
+    width: 64px;
+    border-radius: 20px;    
+}
+
+.sprite-img img:hover {
+    transform: scale(1.05);
+    cursor: grab;
+}
+
+.sprite-img img:active {
+    transform: scale(0.95);
+    filter: brightness(0.5);
+    cursor: grabbing;
+}

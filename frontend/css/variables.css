@@ -1,0 +1,35 @@
+/* Color palettes, fonts, other variables */
+
+@font-face {
+    src: url('../assets/fonts/block-letter.otf') format('opentype');
+    
+    font-family: 'BlockLetter';
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    src: url('../assets/fonts/warband-stencil.otf') format('opentype');
+    
+    font-family: 'Warband';
+    font-weight: 900;
+    font-style: normal;
+}
+
+@font-face {
+    src: url('../assets/fonts/blackopsone.ttf') format('truetype');
+    
+    font-family: 'BlackOps';
+    font-weight: lighter;
+    font-style: normal;
+}
+
+:root {
+  --metal: #3f4430;
+  --metal-dark: #181c16;
+  --metal-light: #69704c;
+  --panel: #24291f;
+  --title: #d8d99a;
+  --text: #d1d1ce;
+  --outline: #0c0e0b;
+}
