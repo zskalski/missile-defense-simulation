@@ -80,7 +80,6 @@
                 </div>
 
                 <div class="menu-box spawn-menu">
-                    <p>spawn-menu</p>
                     <div class="spawn-grid">
                         <div class="sprite-img"><img src="assets/imgs/sprites/command-center.png" alt="Command Center" title="Command Center"></div>
                         <div class="sprite-img"><img src="assets/imgs/sprites/radar-station.png" alt="Radar Staton" title="Radar Station"></div>
@@ -93,20 +92,44 @@
                     </div>
                 </div>
 
-                <div class="menu-box automatic-toggle">
-                    <p>automatic-toggle</p>
+                <div class="menu-box automatic-mode toggle">
+                    <p>Automatic Mode</p>
+                    <label class="switch">
+                        <input type="checkbox">
+                        <span class="toggle-slider round"></span>
+                    </label>
                 </div>
 
-                <div class="menu-box radar-visibility">
-                    <p>radar-visibility</p>
+                <div class="menu-box track-visibility toggle">
+                    <p>Track Visibility</p>
+                    <label class="switch">
+                        <input type="checkbox">
+                        <span class="toggle-slider round"></span>
+                    </label>
                 </div>
 
-                <div class="menu-box track-visibility">
-                    <p>track-visibility</p>
+                <div class="menu-box grid-lines toggle">
+                    <p>Grid Lines</p>
+                    <label class="switch">
+                        <input type="checkbox">
+                        <span class="toggle-slider round"></span>
+                    </label>
                 </div>
 
-                <div class="menu-box simulation-speed">
-                    <p>simulation-speed</p>
+                <div class="menu-box radar-visibility range">
+                    <p>Radar Visibility</p>
+                    <div class="range-slider-container">
+                        <input type="range" min="1" max="100" value="50" class="range-slider" id="radar-slider">
+                    </div>
+                </div>
+
+                
+
+                <div class="menu-box simulation-speed range">
+                    <p>Simulation Speed</p>
+                    <div class="range-slider-container">
+                        <input type="range" min="1" max="100" value="50" class="range-slider" id="simulation-slider">
+                    </div>
                 </div>
 
             </section>
