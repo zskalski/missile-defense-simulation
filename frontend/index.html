@@ -21,6 +21,9 @@
      <link rel="stylesheet" href="css/variables.css">
      
     <!-- JavaScript Files -->
+     <script src="js/common.js" defer></script> 
+     <script src="js/optionsMenu.js" defer></script>
+     <script src="js/mapOps.js" defer></script>
      <script src="js/main.js" defer></script>
 
 </head>
@@ -70,11 +73,13 @@
                     <h2> Options Menu </h2>
                 </div>
                 
+                <!-- START / PAUSE / RESET CONTROLS -->
+
                 <div class="menu-box state-controls">
                     <div class="button-grid">
-                        <div class="sprite-button"><button class="start-button"><img src="assets/imgs/buttons/play-button.png" alt="Play"></button></div>
-                        <div class="sprite-button"><button class="pause-button"><img src="assets/imgs/buttons/pause-button.png" alt="Pause"></button></button></div>
-                        <div class="sprite-button"><button class="reset-button"><img src="assets/imgs/buttons/reset-button.png" alt="Reset"></button></button></div>
+                        <div class="sprite-button"><button class="start-button" id="start-button"><img src="assets/imgs/buttons/play-button.png" alt="Play"></button></div>
+                        <div class="sprite-button"><button class="pause-button" id="pause-button"><img src="assets/imgs/buttons/pause-button.png" alt="Pause"></button></button></div>
+                        <div class="sprite-button"><button class="reset-button" id="reset-button"><img src="assets/imgs/buttons/reset-button.png" alt="Reset"></button></button></div>
                     </div>
 
                 </div>
@@ -95,7 +100,7 @@
                 <div class="menu-box automatic-mode toggle">
                     <p>Automatic Mode</p>
                     <label class="switch">
-                        <input type="checkbox">
+                        <input type="checkbox" id="automatic-switch">
                         <span class="toggle-slider round"></span>
                     </label>
                 </div>
@@ -103,7 +108,7 @@
                 <div class="menu-box track-visibility toggle">
                     <p>Track Visibility</p>
                     <label class="switch">
-                        <input type="checkbox">
+                        <input type="checkbox" id="track-switch">
                         <span class="toggle-slider round"></span>
                     </label>
                 </div>
@@ -111,7 +116,7 @@
                 <div class="menu-box grid-lines toggle">
                     <p>Grid Lines</p>
                     <label class="switch">
-                        <input type="checkbox">
+                        <input type="checkbox" id="grid-switch">
                         <span class="toggle-slider round"></span>
                     </label>
                 </div>
@@ -119,16 +124,16 @@
                 <div class="menu-box radar-visibility range">
                     <p>Radar Visibility</p>
                     <div class="range-slider-container">
+                        <div class="range-tooltip" id="radar-tooltip">50</div>
                         <input type="range" min="1" max="100" value="50" class="range-slider" id="radar-slider">
                     </div>
                 </div>
 
-                
-
                 <div class="menu-box simulation-speed range">
                     <p>Simulation Speed</p>
                     <div class="range-slider-container">
-                        <input type="range" min="1" max="100" value="50" class="range-slider" id="simulation-slider">
+                        <div class="range-tooltip" id="simulation-tooltip">50</div>
+                        <input type="range" min="1" max="100" value="1" title="50" class="range-slider" id="simulation-slider">
                     </div>
                 </div>
 
