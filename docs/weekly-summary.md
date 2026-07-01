@@ -155,6 +155,7 @@ End:  7/03/2026
 - Refactored CSS files
 - Added ON/OFF Display for toggleable options
 - Added ability to place sprites on map area
+- Created coordinate display for map
 - Developed sprite id system for event log
 
 **Jira Items Worked On**
