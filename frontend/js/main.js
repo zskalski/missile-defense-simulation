@@ -1,3 +1,5 @@
-mapBackground.onload = resizeCanvas;
-window.addEventListener("resize", resizeCanvas);
-drawGrid();
+mapBackground.onload = redrawCanvas;
+window.addEventListener("resize", redrawCanvas);
+
+clearGrid();    // init internal array to null
+

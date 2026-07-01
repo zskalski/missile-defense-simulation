@@ -3,8 +3,6 @@
 .map-area {
     min-width: 0px;
     min-height: 0px;
-    width: 100%;
-    height: 100%;
     width: 940px;
     height: 940px;
 
@@ -13,12 +11,19 @@
     object-fit: cover; /* resizes the img to fill */
     padding: 0;
     margin: 0;
+
+    position: relative;
 }
 
 #mapCanvas {
     display: block;
-    width: 100%;
-    height: 100%;
+    width: 940px;
+    height: 940px;
     padding: 0;
     margin: 0;
+}
+
+.coordinate-box {
+    font-family: "BlackOps";
+    font-size: x-large;
 }

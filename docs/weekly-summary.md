@@ -153,8 +153,30 @@ End:  7/03/2026
 
 **Work Completed**
 - Refactored CSS files
-- Began informational display area
-- Began frontend and backend integration
+- Added ON/OFF Display for toggleable options
+- Added ability to place sprites on map area
+- Developed sprite id system for event log
+
+**Jira Items Worked On**
+
+| Jira ID | Title | Status |
+| ------- | ----- | ------ |
+|    FD-002     |   The frontend shall display the defended asset, radar stations, launchers, targets, and interceptors.    |    In-progress    |
+|    FD-006     |    The frontend shall allow the user to manually spawn a target.   |    In-progress    |
+|    FD-008     |    The frontend shall display an event log for detections, classifications, launches, intercepts, misses, and impacts.   |    In-progress    |
+
+
+**Notes / Decisions**
+
+- The page layout is too zoomed in for split screen, idealy, the page pixel sizes should be scaled downwards ~80%. However, the page is functional and looks good in full screen mode, which is acceptable. If time permits, all frontend UI should be scaled down.
+
+**Blockers**
+
+### Thursday
+
+**Work Completed**
+- Created event log, selected object details, system status, metrics, and alert banner sections for the informational display.
+- Created centralized world-state data structure that houses: user options, placed objects, ect...
 
 **Jira Items Worked On**
 

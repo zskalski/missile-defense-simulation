@@ -7,31 +7,26 @@ body {
 
     background: var(--metal);
     border: 4px solid var(--metal-dark);
-    min-width: 1400px;
-    min-height: 1400px;
+    min-width: 1450px;
+    min-height: 1350px;
 }
 
 .full-content-block {
     display: grid;
     grid-template-columns: minmax(0, 3fr) minmax(0, 1fr);
     grid-template-rows: minmax(0, 4fr) minmax(0, 1fr);
-    row-gap: none;
     gap: 1rem;
     box-sizing: border-box;
 
-    height: 80dvh; /* dynamic veiwport height */
-    width: 95%;
-    max-width: 1400px;
-    max-height: 1400px;
-    min-height: 1150px;
-    min-width: auto;
+    height: 1300px;
+    width: 1400px;
 
     padding: 20px;
     margin-bottom: 45px;
     
     justify-self: center;
     background-color: var(--metal-dark);
-    border: 8px solid var(--outline);
+    border: 10px solid rgb(21, 24, 20);
 }
 
 .sprite-button img{
@@ -46,34 +41,42 @@ body {
     box-shadow: 0 0 0 1px var(--outline);
 }
 
+/* when pressed */
 .sprite-button img:active {
     transform: scale(0.95);
     filter: brightness(0.8);
     box-shadow: inset 0 0 5px black;
 }
 
-.sprite-img img{
+.sprite-draggable {
+    position: relative;
+}
+
+.sprite-draggable img{
     height: 64px;
     width: 64px;  
 }
 
-.sprite-img img:hover {
+.sprite-draggable img:hover {
     transform: scale(1.05);
     cursor: grab;
 }
 
-.sprite-img img:active {
+.sprite-draggable img:active {
     transform: scale(0.95);
     filter: brightness(0.5);
     cursor: grabbing;
 }
 
-/* Box around the slider */
+/* Box around the toggle slider */
 .switch {
+    /* position relative allows for .toggle-slider to be placed relative to the .switch instead of the whole page */
     position: relative;
     display: block;
+
     width: 80px;
     height: 34px;
+    
     margin: 0 auto;
 }
 
@@ -83,15 +86,19 @@ body {
     height: 0;
 }
 
+/* outer toggle track */
 .toggle-slider {
     position: absolute;
-    cursor: pointer;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
+
+    cursor: pointer;
+    
     background-color: var(--button);
     box-shadow: 0 0 0 3px var(--outline);
+
     -webkit-transition: .4s;    /* included for older browsers */
     transition: .4s;
     opacity: 0.7; 
@@ -101,19 +108,24 @@ body {
     opacity: 1; 
 }
 
+/* switch thumb (little circle inside track) */
 .toggle-slider:before {
     position: absolute;
-    content: "";
     height: 26px;
     width: 26px;
     left: 4px;
     bottom: 4px;
+
+    content: ""; /* needed for obj to appear */
+    
     background-color: var(--title);
+
     -webkit-transition: .4s;    
     transition: .4s;
 }
 
-/* CSS selector: selects input element only when it is checked and belongs to slider */
+/* When underlying checkbox is selected, style the :before element that comes after input */
+/* '+' denotes immediate sibling */
 /* Moves the slider to the right when checkbox is checked */
 input:checked + .toggle-slider:before {
     -webkit-transform: translateX(46px);
@@ -129,21 +141,33 @@ input:checked + .toggle-slider:before {
     border-radius: 50%;
 }
 
+.toggle-tooltip {
+    position: absolute;
+    top: -25px;
+    color: var(--text);
+    border-radius: 4px;
+}
+
 .range-slider-container {
     width: 80%;
+    margin: 0 auto;
+
     display: flex;
+    position: relative;
+
     justify-content: center;
     align-items: center;
-    margin: 0 auto;
-    position: relative;
 }
 
 .range-slider {
     appearance: none;
+
     width: 100%;
     height: 15px;
+
     background: transparent;
     opacity: 0.7; 
+
     -webkit-transition: .2s; 
     transition: opacity .2s;
 }
@@ -152,6 +176,7 @@ input:checked + .toggle-slider:before {
   opacity: 1; /* Fully shown on mouse-over */
 }
 
+/* :: selects the runnable track pseudo-element */
 .range-slider::-webkit-slider-runnable-track {
   height: 15px;
   border-radius: 5px;
@@ -196,6 +221,8 @@ input:checked + .toggle-slider:before {
     border-radius: 4px;
     font-size: 20px;
     transform: translateX(-50%);
+
+    /* no mouse interactions will pass through */
     pointer-events: none;
 
     display: none;

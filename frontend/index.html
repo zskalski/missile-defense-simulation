@@ -37,7 +37,7 @@
     
     <main>
 
-        <!-- Full Content Block -->
+        <!-- outer page container, holds all elements -->
         <article class="full-content-block">
 
             <!-- Centered Map Area -->
@@ -46,6 +46,8 @@
                 <canvas id="mapCanvas">
                     Browser does not support HTML canvas tag.
                 </canvas>
+
+                <div class="coordinate-box" id="coordinate-box">X: - Y: -</div>
 
             </section>
 
@@ -73,53 +75,92 @@
                     <h2> Options Menu </h2>
                 </div>
                 
+
+
+
                 <!-- START / PAUSE / RESET CONTROLS -->
 
                 <div class="menu-box state-controls">
                     <div class="button-grid">
                         <div class="sprite-button"><button class="start-button" id="start-button"><img src="assets/imgs/buttons/play-button.png" alt="Play"></button></div>
-                        <div class="sprite-button"><button class="pause-button" id="pause-button"><img src="assets/imgs/buttons/pause-button.png" alt="Pause"></button></button></div>
-                        <div class="sprite-button"><button class="reset-button" id="reset-button"><img src="assets/imgs/buttons/reset-button.png" alt="Reset"></button></button></div>
+                        <div class="sprite-button"><button class="pause-button" id="pause-button"><img src="assets/imgs/buttons/pause-button.png" alt="Pause"></button></div>
+                        <div class="sprite-button"><button class="reset-button" id="reset-button"><img src="assets/imgs/buttons/reset-button.png" alt="Reset"></button></div>
                     </div>
 
                 </div>
+
+
+
+
+                <!-- SPAWN MENU -->
 
                 <div class="menu-box spawn-menu">
                     <div class="spawn-grid">
-                        <div class="sprite-img"><img src="assets/imgs/sprites/command-center.png" alt="Command Center" title="Command Center"></div>
-                        <div class="sprite-img"><img src="assets/imgs/sprites/radar-station.png" alt="Radar Staton" title="Radar Station"></div>
-                        <div class="sprite-img"><img src="assets/imgs/sprites/protected-target.png" alt="Protected Target" title="Protected Target"></div>
-                        <div class="sprite-img"><img src="assets/imgs/sprites/interceptor.png" alt="Interceptor" title="Interceptor"></div>
-                        <div class="sprite-img"><img src="assets/imgs/sprites/enemy-missile.png" alt="Enemy Missile" title="Enemy Missile"></div>
-                        <div class="sprite-img"><img src="assets/imgs/sprites/enemy-missile-barrage.png" alt="Enemy Missile Barrage" title="Enemy Missile Barrage"></div>
-                        <div class="sprite-img"><img src="assets/imgs/sprites/tree.png" alt="Tree" title="Tree"></div>
-                        <div class="sprite-img"><img src="assets/imgs/sprites/lake.png" alt="Lake" title="Lake"></div>
+
+                        <div class="sprite-draggable" id="command-center-template" data-type="command-center">
+                            <img src="assets/imgs/sprites/command-center.png" alt="Command Center" title="Command Center" draggable="true">
+                        </div>
+                        <div class="sprite-draggable" id="radar-station-template" data-type="radar">
+                            <img src="assets/imgs/sprites/radar-station.png" alt="Radar Staton" title="Radar Station" draggable="true">
+                        </div>
+                        <div class="sprite-draggable" id="protected-target-template" data-type="protected-target">
+                            <img src="assets/imgs/sprites/protected-target.png" alt="Protected Target" title="Protected Target" draggable="true">
+                        </div>
+                        <div class="sprite-draggable" id="interceptor-template" data-type="interceptor">
+                            <img src="assets/imgs/sprites/interceptor.png" alt="Interceptor" title="Interceptor" draggable="true">
+                        </div>
+                        <div class="sprite-draggable" id="enemy-missile-template" data-type="enemy-missile">
+                            <img src="assets/imgs/sprites/enemy-missile.png" alt="Enemy Missile" title="Enemy Missile" draggable="true">
+                        </div>
+                        <div class="sprite-draggable" id="enemy-missile-barrage-template" data-type="enemy-missile-barrage">
+                            <img src="assets/imgs/sprites/enemy-missile-barrage.png" alt="Enemy Missile Barrage" title="Enemy Missile Barrage" draggable="true">
+                        </div>
+                        <div class="sprite-draggable" id="tree-template" data-type="tree">
+                            <img src="assets/imgs/sprites/tree.png" alt="Tree" title="Tree" draggable="true">
+                        </div>
+                        <div class="sprite-draggable" id="lake-template" data-type="lake">
+                            <img src="assets/imgs/sprites/lake.png" alt="Lake" title="Lake">
+                        </div>
+
                     </div>
                 </div>
 
-                <div class="menu-box automatic-mode toggle">
+
+
+
+                <!-- TOGGLEABLES -->
+
+                <div class="menu-box toggle">
                     <p>Automatic Mode</p>
                     <label class="switch">
+                        <div class="toggle-tooltip" id="auto-tooltip">OFF</div>
                         <input type="checkbox" id="automatic-switch">
                         <span class="toggle-slider round"></span>
                     </label>
                 </div>
 
-                <div class="menu-box track-visibility toggle">
+                <div class="menu-box toggle">
                     <p>Track Visibility</p>
                     <label class="switch">
+                        <div class="toggle-tooltip" id="track-tooltip">OFF</div>
                         <input type="checkbox" id="track-switch">
                         <span class="toggle-slider round"></span>
                     </label>
                 </div>
 
-                <div class="menu-box grid-lines toggle">
+                <div class="menu-box toggle">
                     <p>Grid Lines</p>
                     <label class="switch">
+                        <div class="toggle-tooltip" id="grid-tooltip">OFF</div>
                         <input type="checkbox" id="grid-switch">
                         <span class="toggle-slider round"></span>
                     </label>
                 </div>
+
+
+
+
+                <!-- RANGE SLIDERS -->
 
                 <div class="menu-box radar-visibility range">
                     <p>Radar Visibility</p>

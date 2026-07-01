@@ -104,9 +104,12 @@
     place-content: center;
     place-items: center;
     align-items: center;
+    min-height: 100px;
+    max-height: 100px;
 }
 
 .toggle p {
     font-size: small;
     margin-left: 20px;
+    align-content: left;
 }
