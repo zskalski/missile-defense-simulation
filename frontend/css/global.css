@@ -248,3 +248,19 @@ input:checked + .toggle-slider:before {
 
     display: none;
 }
+
+.label-gray {
+    color: var(--text);
+}
+
+.label-yellow {
+    color: darkgoldenrod;
+}
+
+.label-red {
+    color: red;
+}
+
+.label-green {
+    color: green;
+}

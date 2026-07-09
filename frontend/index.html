@@ -24,6 +24,8 @@
      <script src="js/common.js" defer></script> 
      <script src="js/optionsMenu.js" defer></script>
      <script src="js/mapOps.js" defer></script>
+     <script src="js/infoOps.js" defer></script>
+     <script src="js/socket.js" defer></script>
      <script src="js/main.js" defer></script>
 
 </head>
@@ -227,13 +229,13 @@
                  <!-- Event Log -->
                 <div class="info-box event-log">
                     <div class="event-log-label">Event Log</div>
-                    <div class="event-log-message"></div>
+                    <div class="event-log-message" id="event-log"></div>
                 </div>
 
                 <!-- Selected Object Details -->
                 <div class="info-box selected-object">
                     <div class="selected-object-label">Object Details</div>
-                    <div class="selected-object-details"></div>
+                    <div class="selected-object-details" id="selected-object"></div>
                 </div>
 
                 <!-- Metrics -->
@@ -242,19 +244,19 @@
                     <div class="metrics-info-container">
                         <div class="metrics-info-box">
                             <div class="metrics-sublabel">Simulation Time:</div>
-                            <div class="metrics-state" id="metricSystemMode">-</div>
+                            <div class="metrics-state" id="metrics-time">00:00:00</div>
                         </div>
                         <div class="metrics-info-box">
                             <div class="metrics-sublabel">Protected Targets:</div>
-                            <div class="metrics-state" id="metricSystemMode">-</div>
+                            <div class="metrics-state" id="metrics-targets">0</div>
                         </div>
                         <div class="metrics-info-box">
                             <div class="metrics-sublabel">Tracks:</div>
-                            <div class="metrics-state" id="metricSystemMode">-</div>
+                            <div class="metrics-state" id="metrics-tracks">0</div>
                         </div>
                         <div class="metrics-info-box">
                             <div class="metrics-sublabel">Interceptors:</div>
-                            <div class="metrics-state" id="metricSystemMode">-</div>
+                            <div class="metrics-state" id="metrics-interceptors">0</div>
                         </div>
                     </div>        
                 </div>

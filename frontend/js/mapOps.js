@@ -14,14 +14,6 @@ let mapGrid = [];
 
 // SPRITE PLACEMENT LOGIC
 let draggedSprite = null;
-let placedCommandCenter = 1;
-let placedRadar = 1;
-let placedTarget = 1;
-let placedInterceptor = 1;
-let placedEnemyMissile = 1;
-let placedEnemyMissileBarrage = 1;
-let placedTree = 1;
-let placedLake = 1;
 
 // SPRITE TOOLTIP
 const spriteToolTip = document.getElementById("sprite-tooltip");
@@ -173,36 +165,36 @@ function getNewPieceID(piece) {
     let dataType = piece.dataset.type;
     switch(dataType) {
         case "command-center":
-            pieceNumber = placedCommandCenter;
             placedCommandCenter++;
+            pieceNumber = placedCommandCenter;
             break;
         case "radar":
-            pieceNumber = placedRadar;
             placedRadar++;
+            pieceNumber = placedRadar;
             break;
         case "protected-target":
-            pieceNumber = placedTarget;
             placedTarget++;
+            pieceNumber = placedTarget;
             break;
         case "interceptor":
-            pieceNumber = placedInterceptor;
             placedInterceptor++;
+            pieceNumber = placedInterceptor;
             break;
         case "enemy-missile":
-            pieceNumber = placedEnemyMissile;
             placedEnemyMissile++;
+            pieceNumber = placedEnemyMissile;
             break;
         case "enemy-missile-barrage":
-            pieceNumber = placedEnemyMissileBarrage;
             placedEnemyMissileBarrage++;
+            pieceNumber = placedEnemyMissileBarrage;
             break;
         case "tree":
-            pieceNumber = placedTree;
             placedTree++;
+            pieceNumber = placedTree;
             break;
         case "lake":
-            pieceNumber = placedLake;
             placedLake++;
+            pieceNumber = placedLake;
             break;
     } return `${dataType}-${pieceNumber}`;
 }
@@ -263,10 +255,18 @@ function placePiece(piece) {
     // console.log("piece classlist: " + piece.classList);
 
     // add click event listener to display information
-    piece.addEventListener("click", () => showPieceTooltip(piece));
+    piece.addEventListener("click", () => {
+        showPieceTooltip(piece);
+        showObjectDetails(piece);
+    });
     piece.addEventListener("pointerleave", () => hidePieceTooltip(piece));
 
     mapArea.appendChild(piece);
+
+    addToEventLog(String(piece.id + ": placed at (x: " + Math.floor((col * cellWidth) + (0.5 * cellWidth)) + ", y: " + Math.floor((row * cellHeight) + (0.5 * cellHeight)) + ")"));
+
+    updateTargetMetric();
+    updateInterceptorMetric();
 }
 
 function removePiece(piece) {

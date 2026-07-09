@@ -38,6 +38,8 @@ play.addEventListener('click', () => {
     pressedButton(playImg);
     releasedButton(pauseImg);
 
+    startTimer();
+
     // console.log("play:"+ options.play);
     // console.log("pause:"+ options.pause);
     // console.log("reset:"+ options.reset);
@@ -51,6 +53,8 @@ pause.addEventListener('click', () => {
     pressedButton(pauseImg);
     releasedButton(playImg);
 
+    pauseTimer();
+
     // console.log("play:"+ options.play);
     // console.log("pause:"+ options.pause);
     // console.log("reset:"+ options.reset);
@@ -63,6 +67,8 @@ reset.addEventListener('click', () => {
 
     releasedButton(playImg);
     releasedButton(pauseImg);
+
+    resetMetrics();
     clearGrid();
     redrawCanvas(options);
     
