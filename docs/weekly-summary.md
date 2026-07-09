@@ -178,13 +178,14 @@ End:  7/03/2026
 ### Thursday
 
 **Work Completed**
+
 - Created frontend display for event log, selected object details, system status, metrics, and alert banner sections for the informational display.
 
 **Jira Items Worked On**
 
-| Jira ID | Title | Status |
-| ------- | ----- | ------ |
-|    FD-008     |   The frontend shall display an event log for detections, classifications, launches, intercepts, misses, and impacts.    |    In-progress    |
+| Jira ID | Title                                                                                                               | Status      |
+| ------- | ------------------------------------------------------------------------------------------------------------------- | ----------- |
+| FD-008  | The frontend shall display an event log for detections, classifications, launches, intercepts, misses, and impacts. | In-progress |
 
 **Notes / Decisions**
 
@@ -211,6 +212,74 @@ End:  7/10/2026
 ### Monday
 
 *** N/A ***
+
+
+### Tuesday
+
+*** N/A ***
+
+
+### Wednesday
+
+**Work Completed**
+
+- Added map reset behavior that clears placed sprites and resets the internal grid state.
+- Added initial sprite tooltip support for placed map objects.
+- Added visual styling for placed sprites and tooltip display.
+
+
+### Thursday
+
+**Work Completed**
+- Implemented visual radar coverage drawing around radar sprites and improved radar coverage rendering with centered, fading circular visibility areas.
+- Added placed-sprite click behavior for tooltips and object-detail hooks.
+- Added highlight bubbles for selected non-radar objects.
+- Added a simulation clock with start, pause, and reset behavior.
+- Added event log message support with colored labels for status types like error, warning, success, and default messages.
+- Added metrics updates for simulation time, protected targets, tracks, and interceptors.
+- Added a preliminary socket.js
+
+**Jira Items Worked On**
+
+| Jira ID | Title | Status |
+| ------- | ----- | ------ |
+|    FD-002     |   The frontend shall display the defended asset, radar stations, launchers, targets, and interceptors.    |    Completed    |
+|    FD-008     |    The frontend shall display an event log for detections, classifications, launches, intercepts, misses, and impacts.   |    Completed    |
+|    FD-003     |   The frontend shall display radar detection ranges    |    Completed    |
+|    FD-006     |   The frontend shall allow the user to manually spawn a target.    |    Completed    |
+|         |       |        |
+|         |       |        |
+|         |       |        |
+|         |       |        |
+|         |       |        |
+
+**Notes / Decisions**
+
+- Timer, placement, and vertification logic must be moved to the backend. Frontend should be only visuals, backend should represent the true state.
+
+**Blockers**
+
+### Friday
+
+**Work Completed**
+
+**Jira Items Worked On**
+
+| Jira ID | Title | Status |
+| ------- | ----- | ------ |
+|         |       |        |
+|         |       |        |
+|         |       |        |
+|         |       |        |
+|         |       |        |
+|         |       |        |
+|         |       |        |
+|         |       |        |
+|         |       |        |
+
+**Notes / Decisions**
+
+**Blockers**
 
 ### Day
 
