@@ -176,26 +176,39 @@ End:  7/03/2026
 ### Thursday
 
 **Work Completed**
-- Created event log, selected object details, system status, metrics, and alert banner sections for the informational display.
-- Created centralized world-state data structure that houses: user options, placed objects, ect...
+- Created frontend display for event log, selected object details, system status, metrics, and alert banner sections for the informational display.
 
 **Jira Items Worked On**
 
 | Jira ID | Title | Status |
 | ------- | ----- | ------ |
-|         |       |        |
-|         |       |        |
-|         |       |        |
-|         |       |        |
-|         |       |        |
-|         |       |        |
-|         |       |        |
-|         |       |        |
-|         |       |        |
+|    FD-008     |   The frontend shall display an event log for detections, classifications, launches, intercepts, misses, and impacts.    |    In-progress    |
 
 **Notes / Decisions**
 
 **Blockers**
+
+### Friday
+
+*** N/A ***
+
+---
+
+## Week 3 - Backend Connection and Initial Structure
+
+**Dates:**
+Start:  7/6/2026
+End:  7/10/2026
+
+### Weekly Goals
+
+- Connect the frontend display to the backend, enable parameter passing for the system (tickrate, radar range, etc.)
+- Create core backend system
+- Complete WebSocket Integration
+
+### Monday
+
+*** N/A ***
 
 ### Day
 

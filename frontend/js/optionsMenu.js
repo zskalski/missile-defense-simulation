@@ -38,9 +38,9 @@ play.addEventListener('click', () => {
     pressedButton(playImg);
     releasedButton(pauseImg);
 
-    console.log("play:"+ options.play);
-    console.log("pause:"+ options.pause);
-    console.log("reset:"+ options.reset);
+    // console.log("play:"+ options.play);
+    // console.log("pause:"+ options.pause);
+    // console.log("reset:"+ options.reset);
 });
 
 pause.addEventListener('click', () => {
@@ -51,9 +51,9 @@ pause.addEventListener('click', () => {
     pressedButton(pauseImg);
     releasedButton(playImg);
 
-    console.log("play:"+ options.play);
-    console.log("pause:"+ options.pause);
-    console.log("reset:"+ options.reset);
+    // console.log("play:"+ options.play);
+    // console.log("pause:"+ options.pause);
+    // console.log("reset:"+ options.reset);
 });
 
 reset.addEventListener('click', () => {
@@ -66,9 +66,9 @@ reset.addEventListener('click', () => {
     clearGrid();
     redrawCanvas(options);
     
-    console.log("play:"+ options.play);
-    console.log("pause:"+ options.pause);
-    console.log("reset:"+ options.reset);
+    // console.log("play:"+ options.play);
+    // console.log("pause:"+ options.pause);
+    // console.log("reset:"+ options.reset);
 });
 
 function pressedButton(img) {
@@ -98,7 +98,7 @@ autoCheckbox.addEventListener('change', function(event) {
         autoTooltip.textContent = "OFF";
         autoTooltip.style.left = `0px`;
     }
-    console.log("doAuto:" + options.doAuto);
+    // console.log("doAuto:" + options.doAuto);
 });
 
 trackCheckbox.addEventListener('change', function(event) {
@@ -112,7 +112,7 @@ trackCheckbox.addEventListener('change', function(event) {
         trackTooltip.style.left = `0px`;
     }
     redrawCanvas(options);
-    console.log("doTrack:" + options.doTrack);
+    // console.log("doTrack:" + options.doTrack);
 });
 
 gridCheckbox.addEventListener('change', function(event) {
@@ -126,7 +126,7 @@ gridCheckbox.addEventListener('change', function(event) {
         gridTooltip.style.left = `0px`;
     }
     redrawCanvas(options);
-    console.log("doGrid:" + options.doGrid);
+    // console.log("doGrid:" + options.doGrid);
 });
 
 
@@ -182,13 +182,13 @@ radarSlider.addEventListener('pointerup', () => {
     radarTooltip.style.display = "none";         // make the tooltip disappear
     options.radarVis = radarSlider.value;        // update value in options data struct
     resizeCanvas(options)
-    console.log("radar vis:" + options.radarVis);
+    // console.log("radar vis:" + options.radarVis);
 });
 
 simulationSlider.addEventListener('pointerup', () => {
     simulationTooltip.style.display = "none";             
     options.simRate = simulationSlider.value;
-    console.log("sim rate:" + options.simRate);
+    // console.log("sim rate:" + options.simRate);
 });
 
 updateSliderTooltip(radarSlider, radarTooltip);

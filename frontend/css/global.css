@@ -68,6 +68,27 @@ body {
     cursor: grabbing;
 }
 
+.sprite-placed {
+    position: relative;
+}
+
+.sprite-placed img {
+    height: 64px;
+    width: 64px;
+}
+
+.sprite-placed img:hover {
+    cursor: pointer;
+}
+
+.sprite-tooltip {
+    width: 30px;
+    height: 30px;
+    background-color: white;
+    position: absolute;
+    display: none;
+}
+
 /* Box around the toggle slider */
 .switch {
     /* position relative allows for .toggle-slider to be placed relative to the .switch instead of the whole page */
