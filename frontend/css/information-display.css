@@ -46,7 +46,7 @@
 
     background-color: #232420;
     box-shadow: 0 0 0 2px #3d3d39;
-    color: gray;
+    color: rgb(128, 128, 128);
 }
 
 .alert-banner .alert-label {

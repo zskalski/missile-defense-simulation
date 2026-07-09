@@ -13,6 +13,7 @@ const cellHeight = mapArea.clientHeight / gridRows;
 let mapGrid = [];
 
 // SPRITE PLACEMENT LOGIC
+let draggedSprite = null;
 let placedCommandCenter = 1;
 let placedRadar = 1;
 let placedTarget = 1;
@@ -26,9 +27,15 @@ let placedLake = 1;
 const spriteToolTip = document.getElementById("sprite-tooltip");
 
 
+// EVENT LISTENER FLAGS
+let canDrawRadars = true;
+let canDrawSingleRadar = true;
+let canDrawHighlight = true;
+
+
 // REFRESH MAP
 
-function redrawCanvas(options) {
+function redrawCanvas() {
     mapCanvas.width = mapArea.clientWidth;
     mapCanvas.height = mapArea.clientHeight;
 
@@ -41,8 +48,6 @@ function redrawCanvas(options) {
             drawGrid();
         if(options.doTrack)
             drawTrack();
-
-        drawRadarVisibility();
     }
 }
 
@@ -89,38 +94,60 @@ function clearGrid() {
 
 // RADAR VISIBILITY
 
-function drawRadarVisibility(piece) {
+function drawRadarVisibility() {
     radars = mapArea.querySelectorAll('[data-type="radar"]');
     for(let i = 0; i < radars.length; i++) {
-        let curRadar = radars[i];
-        // console.log(curRadar);
-        // console.log("curRadar X: " + curRadar.dataset.placed_x + ", Y: " + curRadar.dataset.placed_y);
-        console.log("options: " + options.radarVis);
-        mapContext.beginPath();
-        mapContext.arc(Number(curRadar.dataset.placed_x), Number(curRadar.dataset.placed_y) - 40, options.radarVis, 0, (Math.PI * 2));
-        mapContext.strokeStyle = "red";
-        mapContext.lineWidth = 5;
-        mapContext.stroke();
-
-        // TO DO: make radar visibility area more transparent as if fades out (maybe also add logic where it gets more unlikely to detect missiles the further away they are from the radar)
-
-        // BUG : radar circle x and y are not centered on the radar sprite, need to fix when x and y are assigned to be the middle of the sprite
+        drawSingleRadarVisibility(radars[i]);
     }
 }
 
+function drawSingleRadarVisibility(piece) {
+    let curRadar = piece;
+    let centerX = curRadar.dataset.col * cellWidth + (0.5 * cellWidth);
+    let centerY = curRadar.dataset.row * cellHeight + (0.5 * cellHeight);
+        
+    // fading arc logic
+    let maxRadius = Number(options.radarVis) * 5 + 60;
+    let curRadius = 0;
+    while (curRadius < maxRadius) {
+        let opacity = 0.5 - (curRadius / maxRadius);
+        opacity = Math.max(0 , opacity);
+
+        mapContext.strokeStyle = `rgba(8, 94, 6, ${opacity})`;
+        mapContext.lineWidth = 5;
+        mapContext.beginPath();
+        mapContext.arc(centerX, centerY, curRadius, 0, (Math.PI * 2));       
+        mapContext.stroke();
+
+        curRadius += 1;
+    }
+
+    // TO DO: make radar visibility area more transparent as if fades out (maybe also add logic where it gets more unlikely to detect missiles the further away they are from the radar)
+}
 
 
 // SPRITE PLACEMENT LOGIC
 
 mapArea.addEventListener("dragover", event => {
+    
+    if (!draggedSprite) {
+        return;
+    }
+    
     event.preventDefault();
+    
+    if(!canDrawRadars)
+        return;
+    
+    drawRadarVisibility();
+    canDrawRadars = false;
 });
 
 mapArea.addEventListener("drop", event => {
     event.preventDefault();
 
     const pieceId = event.dataTransfer.getData("text/plain");
-    // console.log("Dropped pieceId:", pieceId);
+    console.log("Dropped pieceId:", pieceId);
 
     const originalPiece = document.getElementById(pieceId);
     // console.log("Original piece:", originalPiece);
@@ -137,6 +164,8 @@ mapArea.addEventListener("drop", event => {
     newPiece.id = getNewPieceID(newPiece);
 
     placePiece(newPiece);
+
+    canDrawRadars = true;
 });
 
 function getNewPieceID(piece) {
@@ -231,15 +260,13 @@ function placePiece(piece) {
     piece.style.left = `${(col * cellWidth) - 3}px`;
     piece.style.top = `${(row * cellHeight) - 3}px`;
 
-    console.log("piece classlist: " + piece.classList);
+    // console.log("piece classlist: " + piece.classList);
 
     // add click event listener to display information
     piece.addEventListener("click", () => showPieceTooltip(piece));
     piece.addEventListener("pointerleave", () => hidePieceTooltip(piece));
 
     mapArea.appendChild(piece);
-
-    drawRadarVisibility();
 }
 
 function removePiece(piece) {
@@ -257,22 +284,58 @@ function removePiece(piece) {
     mapArea.removeChild(piece);
 }
 
-// TO DO: put tool tip in the info box of the information display
-//        instead of appearing on screen above the element
+
 function showPieceTooltip(piece) {
+    
+    // tool tip text
     spriteToolTip.style.position = "absolute";
-    spriteToolTip.style.left = `${(piece.dataset.col * cellWidth) + 13}px`;
-    spriteToolTip.style.top = `${(piece.dataset.row * cellHeight) - 35}px`;
+    // console.log("piece.dataset.col: " + piece.dataset.col);
+    // console.log("cellWidth: " + cellWidth);
+    // console.log("piece.dataset.row: " + piece.dataset.row);
+    // console.log("cellHeight: " + cellHeight);
+    spriteToolTip.style.left = `${(piece.dataset.col * cellWidth + (0.5 * cellWidth))}px`;
+    spriteToolTip.style.top = `${(piece.dataset.row * cellHeight)}px`;
+    spriteToolTip.style.transform = "translate(-50%, -90%)";
     spriteToolTip.style.display = "block";
     spriteToolTip.style.fontSize = "2rem";
-    spriteToolTip.style.width = "200px";
-    spriteToolTip.style.height = "200px";
-    spriteToolTip.style.whiteSpace = "pre-wrap";
-    spriteToolTip.textContent = "ID: interceptor-1\nMissiles Launched: 49\nSuccess Rate: 75%"; 
+    spriteToolTip.style.whiteSpace = "nowrap";
+    spriteToolTip.style.width = "fit-content";
+    spriteToolTip.style.height = "fit-content";
+    spriteToolTip.style.padding = "10px";
+    spriteToolTip.textContent = piece.id;
+    spriteToolTip.style.zIndex = "9999";
+
+    // console.log(piece.dataset.type);
+
+    if(piece.dataset.type == "radar") {
+
+        if(!canDrawSingleRadar)
+            return;
+
+        drawSingleRadarVisibility(piece);
+        canDrawSingleRadar = false;
+        return;
+    }
+
+    if(!canDrawHighlight)
+        return;
+
+    // piece highlight bubble
+    let centerX = piece.dataset.col * cellWidth + (0.5 * cellWidth);
+    let centerY = piece.dataset.row * cellHeight + (0.5 * cellHeight);
+    mapContext.beginPath();
+    mapContext.arc(centerX, centerY, cellHeight * 0.6, 0, (Math.PI * 2));
+    mapContext.fillStyle = "rgba(250, 247, 94, 0.5)";
+    mapContext.fill();
+
+    canDrawHighlight = false;
 }
 
 function hidePieceTooltip(piece) {
     spriteToolTip.style.display = "none";
+    canDrawSingleRadar = true;
+    canDrawHighlight = true;
+    redrawCanvas();
 }
 
 // MAP COORDINATES

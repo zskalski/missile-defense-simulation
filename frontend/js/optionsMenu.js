@@ -181,7 +181,7 @@ addSliderEventListeners(simulationSlider, simulationTooltip);
 radarSlider.addEventListener('pointerup', () => {
     radarTooltip.style.display = "none";         // make the tooltip disappear
     options.radarVis = radarSlider.value;        // update value in options data struct
-    resizeCanvas(options)
+    redrawCanvas(options)
     // console.log("radar vis:" + options.radarVis);
 });
 
@@ -203,5 +203,10 @@ updateSliderTooltip(simulationSlider, simulationTooltip);
 for (let i = 0; i < draggableSprites.length; i++) {
     draggableSprites[i].addEventListener("dragstart", event => {
         event.dataTransfer.setData("text/plain", draggableSprites[i].id);
+        draggedSprite = event.currentTarget;
+    });
+
+    draggableSprites[i].addEventListener("dragend", () => {
+        draggedSprite = null;
     });
 }

@@ -84,7 +84,7 @@ body {
 .sprite-tooltip {
     width: 30px;
     height: 30px;
-    background-color: white;
+    background-color: transparent;
     position: absolute;
     display: none;
 }
