@@ -6,7 +6,7 @@
     width: 940px;
     height: 940px;
 
-    border: 4px solid var(--outline);
+    border: 4px solid var(--pannel);
     background-color: var(--panel);
     object-fit: cover; /* resizes the img to fill */
     padding: 0;

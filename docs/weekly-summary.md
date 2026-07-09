@@ -106,6 +106,7 @@ End:  6/26/2026
 **N/A**
 
 ---
+
 ## Week 2 - Frontend Development
 
 **Dates:**
@@ -120,20 +121,20 @@ End:  7/03/2026
 ### Monday
 
 **Work Completed**
+
 - Completed sidebar options menu
 - Implemented custom toggle buttons, range sliders, control buttons (start/pause/reset), and sprite images to drag and place on the operational area.
 - Seperated CSS code for better orangization and maintainability
 
 **Jira Items Worked On**
 
-| Jira ID | Title | Status |
-| ------- | ----- | ------ |
-|    FD-001     |   The frontend shall display a 2D map of the operational area.    |    Completed    |
-|    FD-009     |   The frontend shall display a menu with all configurable options of the simulation.    |    Completed    |
-|    FD-005     |   The frontend shall provide controls to start, pause, resume, reset, and stop the simulation.    |    Completed    |
-|    FD-002     |   The frontend shall display the defended asset, radar stations, launchers, targets, and interceptors.    |    In-progress    |
-|    FD-006     |   The frontend shall allow the user to manually spawn a target.    |    In-progress    |
-
+| Jira ID | Title                                                                                                | Status      |
+| ------- | ---------------------------------------------------------------------------------------------------- | ----------- |
+| FD-001  | The frontend shall display a 2D map of the operational area.                                         | Completed   |
+| FD-009  | The frontend shall display a menu with all configurable options of the simulation.                   | Completed   |
+| FD-005  | The frontend shall provide controls to start, pause, resume, reset, and stop the simulation.         | Completed   |
+| FD-002  | The frontend shall display the defended asset, radar stations, launchers, targets, and interceptors. | In-progress |
+| FD-006  | The frontend shall allow the user to manually spawn a target.                                        | In-progress |
 
 **Notes / Decisions**
 
@@ -146,12 +147,14 @@ End:  7/03/2026
 ### Tuesday
 
 **Work Completed**
+
 - Added JavaScript to slider bars to display radar visibility range and tick rate
 - Added listeners to all sidebar components
 
 ### Wednesday
 
 **Work Completed**
+
 - Refactored CSS files
 - Added ON/OFF Display for toggleable options
 - Added ability to place sprites on map area
@@ -160,12 +163,11 @@ End:  7/03/2026
 
 **Jira Items Worked On**
 
-| Jira ID | Title | Status |
-| ------- | ----- | ------ |
-|    FD-002     |   The frontend shall display the defended asset, radar stations, launchers, targets, and interceptors.    |    In-progress    |
-|    FD-006     |    The frontend shall allow the user to manually spawn a target.   |    In-progress    |
-|    FD-008     |    The frontend shall display an event log for detections, classifications, launches, intercepts, misses, and impacts.   |    In-progress    |
-
+| Jira ID | Title                                                                                                               | Status      |
+| ------- | ------------------------------------------------------------------------------------------------------------------- | ----------- |
+| FD-002  | The frontend shall display the defended asset, radar stations, launchers, targets, and interceptors.                | In-progress |
+| FD-006  | The frontend shall allow the user to manually spawn a target.                                                       | In-progress |
+| FD-008  | The frontend shall display an event log for detections, classifications, launches, intercepts, misses, and impacts. | In-progress |
 
 **Notes / Decisions**
 
@@ -176,22 +178,15 @@ End:  7/03/2026
 ### Thursday
 
 **Work Completed**
+
 - Created event log, selected object details, system status, metrics, and alert banner sections for the informational display.
-- Created centralized world-state data structure that houses: user options, placed objects, ect...
 
 **Jira Items Worked On**
 
-| Jira ID | Title | Status |
-| ------- | ----- | ------ |
-|         |       |        |
-|         |       |        |
-|         |       |        |
-|         |       |        |
-|         |       |        |
-|         |       |        |
-|         |       |        |
-|         |       |        |
-|         |       |        |
+| Jira ID | Title                                                                                                                | Status       |
+| ------- | -------------------------------------------------------------------------------------------------------------------- | ------------ |
+| FD-008  | The frontend shall display an event log for detections, classifications, launches, intercepts, misses, and impacts.  | In-progress  |
+
 
 **Notes / Decisions**
 
@@ -220,4 +215,3 @@ End:  7/03/2026
 **Blockers**
 
 ---
-

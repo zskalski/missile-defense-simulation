@@ -32,6 +32,7 @@
     
     <header>
         <div><h1>Missile Defense Simulator</h1></div>
+        <div><h2>Created By: Zachary Skalski-Fouts</h2></div>
         <div><a href="https://github.com/zskalski/missile-defense-simulation">GitHub Repository</a></div>
     </header>
     
@@ -215,7 +216,46 @@
                         +---------------------------------------------------+------------------+
                 -->
 
-                <h2> Information Display </h2>
+                <!-- Alert Banner -->
+                 <div class="info-box alert-banner">
+                    <div class="alert-label">ALERT:</div>
+                    <div class="alert-message">ROUTINE OPERATION</div>
+                </div>
+                 
+                 <!-- Event Log -->
+                <div class="info-box event-log">
+                    <div class="event-log-label">Event Log</div>
+                    <div class="event-log-message"></div>
+                </div>
+
+                <!-- Selected Object Details -->
+                <div class="info-box selected-object">
+                    <div class="selected-object-label">Object Details</div>
+                    <div class="selected-object-details"></div>
+                </div>
+
+                <!-- Metrics -->
+                <div class="info-box metrics">
+                    <div class="metrics-label">System Metrics</div>
+                    <div class="metrics-info-container">
+                        <div class="metrics-info-box">
+                            <div class="metrics-sublabel">Simulation Time:</div>
+                            <div class="metrics-state" id="metricSystemMode">-</div>
+                        </div>
+                        <div class="metrics-info-box">
+                            <div class="metrics-sublabel">Protected Targets:</div>
+                            <div class="metrics-state" id="metricSystemMode">-</div>
+                        </div>
+                        <div class="metrics-info-box">
+                            <div class="metrics-sublabel">Tracks:</div>
+                            <div class="metrics-state" id="metricSystemMode">-</div>
+                        </div>
+                        <div class="metrics-info-box">
+                            <div class="metrics-sublabel">Interceptors:</div>
+                            <div class="metrics-state" id="metricSystemMode">-</div>
+                        </div>
+                    </div>        
+                </div>
 
              </section>
 
