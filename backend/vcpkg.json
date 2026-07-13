@@ -1,0 +1,7 @@
+{
+  "name": "missile-defense-backend",
+  "dependencies": [
+    "boost-beast",
+    "nlohmann-json"
+  ]
+}

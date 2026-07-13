@@ -1,28 +1,35 @@
-const wsUri = "ws://127.0.0.1";
+const wsUri = "ws://127.0.0.1:8080";
 const websocket = new WebSocket(wsUri);
 
-let counter = 1;
-
-const message = {
-    iteration: 1,
-    content: "hello"
-};
-
 websocket.addEventListener("open", () => {
-    console.log("connected");
-    const pingInterval = setInterval(() => {
-        console.log("sent");
-        websocket.send(JSON.stringify(message));
-    }, 1000);   // milliseconds
+    console.log("CONNECTED");
+
+    let message = {
+        type: "test",
+        payload: "hello from the frontend!"
+    };
+
+    websocket.send(JSON.stringify(message));
+    console.log("SENT:", message);
+
 });
 
-websocket.addEventListener("message", (e) => {
-    const message = JSON.parse(e.data);
-    console.log(`RECEIVED: ${message.iteration}: ${message.content}`);
-    counter++;
+websocket.addEventListener("message", (event) => {
+    try {
+        const message = JSON.parse(event.data);
+
+        console.log(
+            `RECEIVED: ${message.type}: ${message.payload}`
+        );
+    } catch (error) {
+        console.error("Received invalid JSON:", event.data);
+    }
 });
 
-websocket.addEventListener("close", () => {
-    console.log("DISCONNECTED");
-    clearInterval(pingInterval);
+websocket.addEventListener("close", (event) => {
+    console.log("CONNECTION CLOSED");
+});
+
+websocket.addEventListener("error", (error) => {
+    console.error("WEBSOCKET ERROR:", error);
 });
