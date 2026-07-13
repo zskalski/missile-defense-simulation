@@ -206,18 +206,16 @@ End:  7/10/2026
 ### Weekly Goals
 
 - Connect the frontend display to the backend, enable parameter passing for the system (tickrate, radar range, etc.)
-- Create core backend system
 - Complete WebSocket Integration
+- Finish remaing Frontend tasks (radar visibility, sprite tooltips)
 
 ### Monday
 
 *** N/A ***
 
-
 ### Tuesday
 
 *** N/A ***
-
 
 ### Wednesday
 
@@ -227,10 +225,10 @@ End:  7/10/2026
 - Added initial sprite tooltip support for placed map objects.
 - Added visual styling for placed sprites and tooltip display.
 
-
 ### Thursday
 
 **Work Completed**
+
 - Implemented visual radar coverage drawing around radar sprites and improved radar coverage rendering with centered, fading circular visibility areas.
 - Added placed-sprite click behavior for tooltips and object-detail hooks.
 - Added highlight bubbles for selected non-radar objects.
@@ -241,17 +239,13 @@ End:  7/10/2026
 
 **Jira Items Worked On**
 
-| Jira ID | Title | Status |
-| ------- | ----- | ------ |
-|    FD-002     |   The frontend shall display the defended asset, radar stations, launchers, targets, and interceptors.    |    Completed    |
-|    FD-008     |    The frontend shall display an event log for detections, classifications, launches, intercepts, misses, and impacts.   |    Completed    |
-|    FD-003     |   The frontend shall display radar detection ranges    |    Completed    |
-|    FD-006     |   The frontend shall allow the user to manually spawn a target.    |    Completed    |
-|         |       |        |
-|         |       |        |
-|         |       |        |
-|         |       |        |
-|         |       |        |
+| Jira ID | Title                                                                                                               | Status    |
+| ------- | ------------------------------------------------------------------------------------------------------------------- | --------- |
+| FD-002  | The frontend shall display the defended asset, radar stations, launchers, targets, and interceptors.                | Completed |
+| FD-008  | The frontend shall display an event log for detections, classifications, launches, intercepts, misses, and impacts. | Completed |
+| FD-003  | The frontend shall display radar detection ranges                                                                   | Completed |
+| FD-006  | The frontend shall allow the user to manually spawn a target.                                                       | Completed |
+
 
 **Notes / Decisions**
 
@@ -262,20 +256,61 @@ End:  7/10/2026
 ### Friday
 
 **Work Completed**
+- Stuided CMake build system, WebSockets, and the Boost.Beast library
+- Designed communication system between frontend and backend
+- Began initial WebSocket Server implementation
 
 **Jira Items Worked On**
 
 | Jira ID | Title | Status |
 | ------- | ----- | ------ |
-|         |       |        |
-|         |       |        |
-|         |       |        |
-|         |       |        |
-|         |       |        |
-|         |       |        |
-|         |       |        |
-|         |       |        |
-|         |       |        |
+|    WS-001     |   The backend shall provide a WebSocket connection for frontend communication.    |    In-progress    |
+|    WS-006     |   The backend shall reject malformed or invalid WebSocket messages without crashing    |    In-progress    |
+
+**Notes / Decisions**
+
+- The communication between frontend/backend will occur using the built-in JS websocket and the Boost.Beast C++ websocket lib
+- The communication will have a synchronous, request-reply style architecture. This means that the frontend will send a request to the backend, wait for a response, apply updates, then send an additional request. Multiple requests will not be sent at one time.
+- 
+- The backend will run on two threads: a simulation thread and a websocketserver thread. The websocket server thread will own every data member inside of the WebSocketServer instance to avoid synchronization issues
+- The frontend will send requests to the WebSocketServer which will put them into a custom ThreadSafeQueue for incoming messages. This queue will be shared in the backend so that the simulation thread can access it. The simulation thread will read the message in the incomingMessages ThreadSafeQueue, then add a message into another queue called outgoingMessages, where the webSocketServer will forward it to the frontend.
+- Messages will be sent using a json format.
+
+**Blockers**
+ - Boost.Beast library is vast and complex
+ - Orginally decided to have a stop() function in the WebSocketServer but this created many issues with the simulation thread being able to call stop() at any time. I tried to implement thread safe data, however this became too complex and I decided to simplify it by having one thread own the entire instance of the server.
+
+---
+
+## Week 4 - Complete Backend Connection and Implement Minimum Viable Product
+
+**Dates:**
+Start:  7/13/2026
+End:  7/17/2026
+
+### Weekly Goals
+
+- Connect the frontend display to the backend, enable parameter passing for the system (tickrate, radar range, etc.)
+- Connect start, pause, reset buttons to backend
+- Move frontend placement logic and timer to the backend
+- Implement basic classes for each piece type (radar, command center, protected target, launcher, missile, etc.)
+- Create basic simulation loop
+- Connect event log and object details to backend
+
+### Monday
+
+**Work Completed**
+- Completed WebSocketServer implementation
+- Fixed design issues from enabling two threads' access to WebSocketServer data
+- Completed basic network tests using json
+- Added error checks using try/catch blocks for json parsing and network errors
+
+**Jira Items Worked On**
+
+| Jira ID | Title | Status |
+| ------- | ----- | ------ |
+|    WS-001     |   The backend shall provide a WebSocket connection for frontend communication.    |    Completed    |
+|    WS-006     |   The backend shall reject malformed or invalid WebSocket messages without crashing    |    Completed    |
 
 **Notes / Decisions**
 

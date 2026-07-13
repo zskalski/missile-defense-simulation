@@ -3,15 +3,6 @@ const websocket = new WebSocket(wsUri);
 
 websocket.addEventListener("open", () => {
     console.log("CONNECTED");
-
-    let message = {
-        type: "test",
-        payload: "hello from the frontend!"
-    };
-
-    websocket.send(JSON.stringify(message));
-    console.log("SENT:", message);
-
 });
 
 websocket.addEventListener("message", (event) => {
@@ -24,6 +15,8 @@ websocket.addEventListener("message", (event) => {
     } catch (error) {
         console.error("Received invalid JSON:", event.data);
     }
+
+    processMessage(message);
 });
 
 websocket.addEventListener("close", (event) => {
