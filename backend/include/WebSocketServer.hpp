@@ -5,6 +5,7 @@
 #include <boost/beast/websocket.hpp>
 #include <nlohmann/json.hpp>
 #include "ThreadSafeQueue.hpp"
+#include "ThreadSafeOutput.hpp"
 
 #include <cstdlib>
 #include <iostream>
@@ -19,7 +20,7 @@ class WebSocketServer {
         using json = nlohmann::json;
         using WebSocket = boost::beast::websocket::stream<tcp::socket>;
 
-        WebSocketServer(boost::asio::io_context & ctx, const std::string & address, unsigned short port, ThreadSafeQueue<json>& in, ThreadSafeQueue<json>& out);
+        WebSocketServer(boost::asio::io_context & ctx, const std::string & address, unsigned short port, ThreadSafeQueue<json>& in, ThreadSafeQueue<json>& out, ThreadSafeOutput & outputStream, ThreadSafeOutput & errorStream);
 
         int run();
 
@@ -30,6 +31,7 @@ class WebSocketServer {
             
         };
         
+        tcp::endpoint getEndpoint();
 
     private:
         boost::asio::io_context & ioContext;        // context to manage i/o, OS link
@@ -38,6 +40,9 @@ class WebSocketServer {
         std::optional<WebSocket> webSocketStream;                     
         ThreadSafeQueue<json>& incomingMessages;
         ThreadSafeQueue<json>& outgoingMessages;
+
+        ThreadSafeOutput & consoleOut;
+        ThreadSafeOutput & consoleErr;
         
         bool running;
 

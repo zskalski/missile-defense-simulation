@@ -15,20 +15,28 @@ using tcp = boost::asio::ip::tcp;
 using json = nlohmann::json;
 using WebSocket = boost::beast::websocket::stream<tcp::socket>;
 
-WebSocketServer::WebSocketServer(boost::asio::io_context & ctx, const std::string & addr, unsigned short port, ThreadSafeQueue<json>& in, ThreadSafeQueue<json>& out):
+WebSocketServer::WebSocketServer(boost::asio::io_context & ctx, const std::string & addr, unsigned short port, ThreadSafeQueue<json>& in, ThreadSafeQueue<json>& out, ThreadSafeOutput & outputStream, ThreadSafeOutput & errorStream):
     ioContext(ctx), 
     serverEndpoint(tcp::endpoint(ip::make_address(addr), port)),
     acceptor(ioContext, serverEndpoint), 
     running(false), 
     webSocketStream(std::nullopt),
     incomingMessages(in),
-    outgoingMessages(out) {
+    outgoingMessages(out), 
+    consoleOut(outputStream),
+    consoleErr(errorStream) {
 }
 
 int WebSocketServer::run() {
     running = true;
 
-    std::cout << "WebSocket server listening on ws://" << serverEndpoint.address() << ':' << serverEndpoint.port() << '\n';
+    consoleOut.write(
+        "WebSocket server listening on ws://",
+        serverEndpoint.address(),
+        ':',
+        serverEndpoint.port(),
+        '\n'
+    );
 
     while (running) {
         try {
@@ -39,15 +47,15 @@ int WebSocketServer::run() {
             webSocketStream.reset();
 
             if (error.code() == boost::beast::websocket::error::closed) {
-                std::cout << "Client disconnected\n";
+                consoleErr.write("Client disconnected\n");
             }
             else {
-                std::cerr << "Network error: " << error.code().message() << '\n';
+                consoleErr.write("Network error: ", error.code().message(), '\n');
             }
         }
         catch (const std::exception& error) {
             webSocketStream.reset();
-            std::cerr << "Server error: " << error.what() << '\n';
+            consoleErr.write("Server error: ", error.what(), '\n');
         }
         
     }
@@ -57,7 +65,7 @@ int WebSocketServer::run() {
     webSocketStream->close(boost::beast::websocket::close_code::normal,error);
 
     if (error && error != boost::beast::websocket::error::closed) {
-        std::cerr << "WebSocket close error: " << error.message() << '\n';
+        consoleErr.write("WebSocket close error: ", error.message(), '\n');
     }
 
     // attempt to close TCP connection
@@ -65,23 +73,23 @@ int WebSocketServer::run() {
         boost::system::error_code error;
         webSocketStream->next_layer().cancel(error);
         if(error) 
-            std::cerr << "Error canceling TCP connection: " << error.message() << '\n';
-        
+            consoleErr.write("Error canceling TCP connection: ", error.message(), '\n');
+
         error.clear();
         webSocketStream->next_layer().close(error);
 
         if(error) 
-            std::cerr << "Error closing TCP connection: " << error.message() << '\n';
+            consoleErr.write("Error closing TCP connection: ", error.message(), '\n');
     }
 
-    std::cout << "WebSocket server stopped.\n";
+    consoleOut.write("WebSocket server stopped.\n");
     return EXIT_SUCCESS;
 }
 
 
 void WebSocketServer::acceptClient() {
     
-    std::cout << "Waiting for client...\n";
+    consoleOut.write("Waiting for client...\n");
     
     boost::system::error_code error;
 
@@ -92,7 +100,7 @@ void WebSocketServer::acceptClient() {
         throw boost::system::system_error(error);
     }
     
-    std::cout << "TCP client connected.\n";
+    consoleOut.write("TCP client connected.\n");
     
     webSocketStream.emplace(std::move(socket));
     webSocketStream->accept(error);
@@ -101,7 +109,7 @@ void WebSocketServer::acceptClient() {
         throw boost::system::system_error(error);
     }
 
-    std::cout << "WebSocket handshake complete.\n";
+    consoleOut.write("WebSocket handshake complete.\n");
 
     // send ready message to the frontend
     json message  = {{"type", "ready"}};
@@ -133,20 +141,20 @@ WebSocketServer::ReadResult WebSocketServer::readMessage() {
     boost::beast::flat_buffer buffer;
     webSocketStream->read(buffer);
     const std::string messageText = boost::beast::buffers_to_string(buffer.data());
-    std::cout << "Raw message: " << messageText << '\n';
+    consoleOut.write("Raw message: ", messageText, '\n');
 
     try {
         json message = processMessage(messageText);
         incomingMessages.push(message);
 
         if (message.at("type") == "shutdown") {
-            std::cout << "Shutdown messaged recieved.\n";
+            consoleOut.write("Shutdown messaged recieved.\n");
             return ReadResult::ShutdownRequest;
         }
-        std::cout << "Message: \n" << message << "\n Successfully added to the queue.\n";
+        consoleOut.write( "Message: \n", message, "\nSuccessfully added to the queue.\n");
     }
     catch (const json::exception & error) {
-        std::cerr << "JSON error: " << error.what() << '\n';
+        consoleErr.write("JSON error: ", error.what(), '\n');
 
         // send an error message back to the client
         json message  = {
@@ -184,7 +192,7 @@ bool WebSocketServer::sendMessage() {
 
 json WebSocketServer::processMessage(const std::string& message) {
     const json parsedMessage = json::parse(message);
-    std::cout << "Parsed message: " << parsedMessage << '\n';
+    consoleOut.write("Parsed message: ", parsedMessage, '\n');
     return parsedMessage;
 }
 
@@ -192,4 +200,8 @@ void WebSocketServer::sendDirectMessage(const json& message) {
     const std::string messageText = message.dump();
     webSocketStream->text(true);
     webSocketStream->write(boost::asio::buffer(messageText));
+}
+
+tcp::endpoint WebSocketServer::getEndpoint() {
+    return serverEndpoint;
 }

@@ -1,4 +1,4 @@
-const wsUri = "ws://127.0.0.1:8080";
+const wsUri = "ws://127.0.0.1:8081";
 const websocket = new WebSocket(wsUri);
 
 websocket.addEventListener("open", () => {

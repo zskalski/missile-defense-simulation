@@ -7,6 +7,10 @@
 #include <nlohmann/json.hpp>
 #include <thread>
 #include <iostream>
+#include <filesystem>
+#include <cstdint>
+#include <windows.h>
+#include <shellapi.h>
 
 MissileDefenseSimulator::MissileDefenseSimulator()
     : webSocketIncoming(), webSocketOutGoing() {
@@ -14,12 +18,47 @@ MissileDefenseSimulator::MissileDefenseSimulator()
 
 void MissileDefenseSimulator::createWebSocketServer(boost::asio::io_context & ctx, const std::string & address, unsigned short port) {
     // construct WebSocketServer in-place to avoid copying/moving
-    server.emplace(ctx, address, port, webSocketIncoming, webSocketOutGoing);
+    webServer.emplace(ctx, address, port, webSocketIncoming, webSocketOutGoing, consoleOut, consoleErr);
+}
+
+void MissileDefenseSimulator::createHttpServer(boost::asio::io_context & ctx, const std::string & address, unsigned short port) {
+    httpServer.emplace(ctx, address, port, std::filesystem::path{"frontend"}, consoleOut, consoleErr);
+}
+
+bool MissileDefenseSimulator::openBrowser(const std::string& url) {
+
+        const HINSTANCE result = ShellExecuteA(
+        nullptr,
+        "open",
+        url.c_str(),
+        nullptr,
+        nullptr,
+        SW_SHOWNORMAL
+    );
+
+    return reinterpret_cast<std::intptr_t>(result) > 32;
 }
 
 void MissileDefenseSimulator::run() {
+
+    if (!webServer) {
+        std::cerr << "Simulator error: web server has not been created. Server start aborted.\n"; 
+        return;
+    }
+
+    if (!httpServer) {
+        std::cerr << "Simulator error: http server has not been created. Server start aborted.\n"; 
+        return;
+    }
+
     running = true;
-    std::thread webServerThread([this]() { server->run(); });
+
+    std::thread webServerThread([this]() { webServer->run(); });
+    std::thread httpServerThread([this]() { httpServer->run(); });
+
+    std::string url = "http://" + httpServer->getEndpoint().address().to_string() + ':' + std::to_string(httpServer->getEndpoint().port());
+    openBrowser(url);
 
     webServerThread.join();
+    httpServerThread.join();
 }
