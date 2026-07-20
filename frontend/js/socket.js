@@ -7,16 +7,20 @@ websocket.addEventListener("open", () => {
 
 websocket.addEventListener("message", (event) => {
     try {
-        const message = JSON.parse(event.data);
-
-        console.log(
-            `RECEIVED: ${message.type}: ${message.payload}`
-        );
+        message = JSON.parse(event.data);
     } catch (error) {
         console.error("Received invalid JSON:", event.data);
+        console.error(error);
+        return;
     }
 
-    processMessage(message);
+    console.log("RECEIVED:", message);
+
+    try {
+        processMessage(message);
+    } catch (error) {
+        console.error("Error processing message:", error);
+    }
 });
 
 websocket.addEventListener("close", (event) => {

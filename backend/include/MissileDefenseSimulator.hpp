@@ -3,12 +3,13 @@
 #include "WebSocketServer.hpp"
 #include "HttpServer.hpp"
 #include "ThreadSafeOutput.hpp"
+#include "MessageHandler.hpp"
 
 #include <nlohmann/json.hpp>
 #include <optional>
 #include <thread>
 #include <iostream>
-
+#include <unordered_map>
 
 class MissileDefenseSimulator {
     public:
@@ -28,6 +29,7 @@ class MissileDefenseSimulator {
         std::optional<WebSocketServer> webServer;           // front-end back-end communication
         std::optional<HttpServer> httpServer;               // front-end http get requests
         //messageRouter router;           // route messages to components
+        
 
         // queues for data transmisstion
         ThreadSafeQueue<nlohmann::json> webSocketIncoming;
@@ -37,10 +39,13 @@ class MissileDefenseSimulator {
         ThreadSafeOutput consoleOut = ThreadSafeOutput(std::cout);
         ThreadSafeOutput consoleErr = ThreadSafeOutput(std::cerr);
 
-
         // threads
         std::optional<std::thread> webServerThread;
         std::optional<std::thread> httpServerThread;
+        std::optional<std::thread> messageProcessingThread;
+
+        // handle incoming/outgoing messages
+        MessageHandler handler = MessageHandler(consoleOut, consoleErr, webSocketIncoming, webSocketOutGoing);           
 
         bool running;
 };

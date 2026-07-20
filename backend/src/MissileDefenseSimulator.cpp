@@ -53,12 +53,14 @@ void MissileDefenseSimulator::run() {
 
     running = true;
 
-    std::thread webServerThread([this]() { webServer->run(); });
     std::thread httpServerThread([this]() { httpServer->run(); });
+    std::thread webServerThread([this]() { webServer->run(); });
+    std::thread messageProcessingThread([this]() { handler.run(); });
 
     std::string url = "http://" + httpServer->getEndpoint().address().to_string() + ':' + std::to_string(httpServer->getEndpoint().port());
     openBrowser(url);
 
+    messageProcessingThread.join();
     webServerThread.join();
     httpServerThread.join();
 }

@@ -12,6 +12,7 @@ class ThreadSafeQueue {
         std::optional<T> pop();
         std::optional<T> popOrWait();
         void close();
+        bool isEmpty();
     private:
         std::queue<T> queue;
         std::mutex mut;
@@ -71,4 +72,10 @@ void ThreadSafeQueue<T>::close() {
         open = false;
     }
     condition.notify_all();
+}
+
+template <typename T>
+bool ThreadSafeQueue<T>::isEmpty() {
+    std::lock_guard<std::mutex> lock(mut);
+    return queue.empty();
 }
