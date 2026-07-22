@@ -56,6 +56,9 @@ class MissileDefenseSimulator {
         void updateAutoMode(const json & message);
         void updateRadarVis(const json & message);
         void updateSimSpeed(const json & message);
+
+        // Placement Logic
+        void addPiece(const json & message);
         
         // handle incoming/outgoing messages
         // job: match messages to corresponding functions in simulator

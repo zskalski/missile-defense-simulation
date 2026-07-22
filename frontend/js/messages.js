@@ -19,6 +19,7 @@
 
 // functions for each message will be stored inside of a map:
 let messageHandler = populateMessageHandler();
+let pendingPieces = new Map();
 
 function populateMessageHandler() {
     
@@ -30,7 +31,8 @@ function populateMessageHandler() {
         ["reset.response", simulationReset],
         ["doAuto.response", recieveSimulationAutoUpdate],
         ["radarVis.response", recieveSimulationRadarVisUpdate],
-        ["simSpeed.response", recieveSimulationSpeedUpdate]
+        ["simSpeed.response", recieveSimulationSpeedUpdate],
+        ["placement.response", recieveSimulationPlacementResponse]
     ])
 }
 
@@ -177,4 +179,42 @@ function sendSimulationSpeedRequest(simSpeed) {
 function recieveSimulationSpeedUpdate(message) {
     updateSimSpeed(message.payload.simSpeed);
     console.log("Simulation speed changed to: ", message.payload.simSpeed);
+}
+
+
+
+// Placement Logic
+function sendSimulationPlacementRequest(piece) {
+    pendingPieces.set(piece.id, piece);
+
+    sendMessage({
+        type: "placement.request",
+        payload: {
+            id: piece.id,
+            type: piece.dataset.type,
+            position: {
+                row: Number(piece.dataset.row),
+                column: Number(piece.dataset.col)
+            }
+        }
+    });
+}
+
+function recieveSimulationPlacementResponse(message) {
+    const status = message.payload.status;
+    const pieceId = message.payload.id;
+    const pendingPiece = pendingPieces.get(pieceId);
+
+    if (!status) {
+        pendingPieces.delete(pieceId);
+        console.log("Placement denied by backend.");
+        return;
+    }
+
+    if (pendingPiece) {
+        placePiece(pendingPiece);
+        pendingPieces.delete(pieceId);
+    }
+
+    console.log("Placement accepted by backend.");
 }

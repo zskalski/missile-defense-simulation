@@ -10,7 +10,6 @@ const gridRows = 16;
 const gridCols = 16;
 const cellWidth = mapArea.clientWidth / gridCols;
 const cellHeight = mapArea.clientHeight / gridRows;
-let mapGrid = [];
 
 // SPRITE PLACEMENT LOGIC
 let draggedSprite = null;
@@ -68,13 +67,6 @@ function drawGrid() {
 }
 
 function clearGrid() {
-    for(let r = 0; r < gridRows; r++) {
-        mapGrid[r] = [];
-        for(let c = 0; c < gridCols; c++) {
-            mapGrid[r][c] = null;
-        }
-    }
-
     const sprites = mapArea.querySelectorAll('.sprite-placed');
     for(let i = 0; i < sprites.length; i++) {
         removePiece(sprites[i]);
@@ -146,16 +138,11 @@ mapArea.addEventListener("drop", event => {
 
     const newPiece = originalPiece.cloneNode(true);
 
-    // check to see if it can snap to map square location
-    if (!(findCell(newPiece, event))) {
-        console.log("Cell is occupied!");
-        return;
-    } 
+    findCell(newPiece, event);
     
-    // get the new piece id and update counters
     newPiece.id = getNewPieceID(newPiece);
 
-    placePiece(newPiece);
+    sendSimulationPlacementRequest(newPiece);
 
     canDrawRadars = true;
 });
@@ -220,29 +207,18 @@ function findCell(piece, event) {
     const row = Math.floor(y / cellHeight);
     const col = Math.floor(x / cellWidth);
 
-    //console.log("Selecting row " + row + " and column " + col);
+    piece.dataset.row = row;
+    piece.dataset.col = col;
+    piece.dataset.placed_x = x;
+    piece.dataset.placed_y = y;
 
-    if(mapGrid[row][col] == null) {
-        piece.dataset.row = row;
-        piece.dataset.col = col;
-        piece.dataset.placed_x = x;
-        piece.dataset.placed_y = y;
-        return true;
-    } else {
-        return false;
-    }
+    return true;
 }
 
 function placePiece(piece) {
     
     const row = Number(piece.dataset.row);
     const col = Number(piece.dataset.col);
-
-    // backend map
-    mapGrid[row][col] = {
-        id: piece.dataset.id,
-        type: piece.dataset.type
-    };
 
     // remove old draggeable class & set new placed class
     piece.classList.replace('sprite-draggable','sprite-placed');
@@ -264,22 +240,12 @@ function placePiece(piece) {
     mapArea.appendChild(piece);
 
     addToEventLog(String(piece.id + ": placed at (x: " + Math.floor((col * cellWidth) + (0.5 * cellWidth)) + ", y: " + Math.floor((row * cellHeight) + (0.5 * cellHeight)) + ")"));
-
-    updateTargetMetric();
-    updateInterceptorMetric();
 }
 
 function removePiece(piece) {
     
     const row = Number(piece.dataset.row);
     const col = Number(piece.dataset.col);
-
-    // ensure it is removed from backend map
-    if (row && col)
-        mapGrid[row][col] = {
-            id: null,
-            type: null
-        };
 
     mapArea.removeChild(piece);
 }

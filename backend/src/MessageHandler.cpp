@@ -11,16 +11,17 @@
 using json = nlohmann::json;
 
 MessageHandler::MessageHandler(
-    ThreadSafeOutput & out, 
+    ThreadSafeOutput & out,
     ThreadSafeOutput & error,
     ThreadSafeQueue<json> & inMessages,
-    MessageCallback sendUpdateCallback,
-    MessageCallback startCallback,
-    MessageCallback pauseCallback,
-    MessageCallback resetCallback,
-    MessageCallback doAutoCallback,
-    MessageCallback radarVisCallback,
-    MessageCallback simSpeedCallback) 
+    MessageHandler::MessageCallback sendUpdateCallback,
+    MessageHandler::MessageCallback startCallback,
+    MessageHandler::MessageCallback pauseCallback,
+    MessageHandler::MessageCallback resetCallback,
+    MessageHandler::MessageCallback doAutoCallback,
+    MessageHandler::MessageCallback radarVisCallback,
+    MessageHandler::MessageCallback simSpeedCallback,
+    MessageHandler::MessageCallback placementCallback)
     :   consoleOut(out), 
         consoleErr(error), 
         incomingMessages(inMessages),
@@ -30,7 +31,8 @@ MessageHandler::MessageHandler(
         resetCallback(resetCallback),
         doAutoCallback(doAutoCallback),
         radarVisCallback(radarVisCallback),
-        simSpeedCallback(simSpeedCallback) {
+        simSpeedCallback(simSpeedCallback),
+        placementCallback(placementCallback) {
 
     running.store(false);
 
@@ -47,7 +49,8 @@ MessageHandler::MessageHandler(
         {"reset.request", this->resetCallback},
         {"doAuto.request", this->doAutoCallback},
         {"radarVis.request", this->radarVisCallback},
-        {"simSpeed.request", this->simSpeedCallback}
+        {"simSpeed.request", this->simSpeedCallback},
+        {"placement.request", this->placementCallback}
     };
 
     // all types of messages requests stemming from the backend will be here:

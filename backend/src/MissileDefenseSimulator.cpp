@@ -12,7 +12,7 @@
 #include <string>
 
 MissileDefenseSimulator::MissileDefenseSimulator()
-    : incomingMessages(), outGoingMessages(), running(false) {
+    : incomingMessages(), outGoingMessages(), running(false), world(consoleOut, consoleErr) {
 }
 
 void MissileDefenseSimulator::createWebSocketServer(boost::asio::io_context & ctx, const std::string & address, unsigned short port) {
@@ -180,6 +180,49 @@ void MissileDefenseSimulator::updateSimSpeed(const json & message) {
 
 
 
+// Placement Validation ---------------------
+
+void MissileDefenseSimulator::addPiece(const json & message) {
+    const json payload = message.at("payload");
+
+    std::string id = payload.at("id").get<std::string>();
+    std::string type = payload.at("type").get<std::string>();
+
+    const json position = payload.at("position");
+    int row = position.at("row").get<int>();
+    int col = position.at("column").get<int>();
+
+    const bool placed = world.addPiece(id, type, row, col);
+    
+    if (placed) 
+        consoleOut.write(id, " placed at row: ", row, ", col: ", col, '\n');
+    else 
+        consoleOut.write("Placement error: ", id, " could not be placed at row: ", row, ", col: ", col, '\n');
+
+    json reply = {
+        {"type", "placement.response"},
+        {"payload", {
+            {"id", id},
+            {"status", placed}
+        }}
+    };
+
+    outGoingMessages.push(reply);
+
+    // Expected JSON structure:
+    // {
+    //   "type": "placement.request",
+    //   "payload": {
+    //     "id": "radar-1",
+    //     "type": "radar",
+    //     "position": {
+    //       "row": 3,
+    //       "col": 4
+    //     }
+    //   }
+    // }
+}
+
 
 void MissileDefenseSimulator::createMessageHandler() {
     handler.emplace(
@@ -214,6 +257,10 @@ void MissileDefenseSimulator::createMessageHandler() {
 
         [this](const json& message) {
             this->updateSimSpeed(message);
+        },
+
+        [this](const json& message) {
+            this->addPiece(message);
         }
     );
     consoleOut.write("Message handler created.\n");

@@ -1,12 +1,15 @@
 #pragma once
-#include <unordered_map>
-#include <string>
-#include <nlohmann/json.hpp>
+
 #include <atomic>
+#include <functional>
+#include <string>
+#include <unordered_map>
+
+#include <nlohmann/json.hpp>
+
+#include "SimulationWorld.hpp"
 #include "ThreadSafeOutput.hpp"
 #include "ThreadSafeQueue.hpp"
-#include "SimulationWorld.hpp"
-#include <functional>
 
 using json = nlohmann::json;
 
@@ -25,9 +28,10 @@ class MessageHandler {
             MessageCallback resetCallback,
             MessageCallback doAutoCallback,
             MessageCallback radarVisCallback,
-            MessageCallback simSpeedCallback
+            MessageCallback simSpeedCallback,
+            MessageCallback placementCallback 
         );
-
+        
         void run();
         void processMessage(const json &);
         json getJsonRequest(const std::string &);
@@ -64,4 +68,5 @@ class MessageHandler {
         MessageCallback doAutoCallback;
         MessageCallback radarVisCallback;
         MessageCallback simSpeedCallback;
+        MessageCallback placementCallback;
 };
