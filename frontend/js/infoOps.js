@@ -27,6 +27,10 @@ function addToEventLog(message) {
     eventLog.scrollTop = eventLog.scrollHeight;
 }
 
+function clearEventLog() {
+    eventLog.replaceChildren();     // removes all children if no arguments specified
+}
+
 function getEventLabel(type) {
     switch (type) {
         case "ERROR":
@@ -58,8 +62,8 @@ function updateTimeMetric(time) {timeMetric.textContent = time;}
 function updateTargetMetric() {targetMetric.textContent = placedTarget;}
 function updateTrackMetric(tracks) {trackMetric.textContent = tracks;}
 function updateInterceptorMetric() {interceptorMetric.textContent = placedInterceptor;}
+
 function resetMetrics() {
-    resetTimer();
     targetMetric.textContent = 0;
     trackMetric.textContent = 0;
     interceptorMetric.textContent = 0;

@@ -1,5 +1,3 @@
-#pragma once
-
 #include "MissileDefenseSimulator.hpp"
 #include "ThreadSafeQueue.hpp"
 #include "WebSocketServer.hpp"
@@ -11,14 +9,15 @@
 #include <cstdint>
 #include <windows.h>
 #include <shellapi.h>
+#include <string>
 
 MissileDefenseSimulator::MissileDefenseSimulator()
-    : webSocketIncoming(), webSocketOutGoing() {
+    : incomingMessages(), outGoingMessages(), running(false) {
 }
 
 void MissileDefenseSimulator::createWebSocketServer(boost::asio::io_context & ctx, const std::string & address, unsigned short port) {
     // construct WebSocketServer in-place to avoid copying/moving
-    webServer.emplace(ctx, address, port, webSocketIncoming, webSocketOutGoing, consoleOut, consoleErr);
+    webServer.emplace(ctx, address, port, incomingMessages, outGoingMessages, consoleOut, consoleErr);
 }
 
 void MissileDefenseSimulator::createHttpServer(boost::asio::io_context & ctx, const std::string & address, unsigned short port) {
@@ -51,16 +50,171 @@ void MissileDefenseSimulator::run() {
         return;
     }
 
+    createMessageHandler();
+
+    if (!handler) {
+        std::cerr << "Simulator error: message handler not been created. Server start aborted.\n"; 
+        return;
+    }
+
     running = true;
 
     std::thread httpServerThread([this]() { httpServer->run(); });
     std::thread webServerThread([this]() { webServer->run(); });
-    std::thread messageProcessingThread([this]() { handler.run(); });
+    std::thread messageProcessingThread([this]() { handler->run(); });
 
     std::string url = "http://" + httpServer->getEndpoint().address().to_string() + ':' + std::to_string(httpServer->getEndpoint().port());
     openBrowser(url);
 
+    // populate options with default values
+    options = SimulationOptions(false, 50, 1);
+
     messageProcessingThread.join();
     webServerThread.join();
     httpServerThread.join();
+}
+
+
+
+// State Updates ---------------------
+
+void MissileDefenseSimulator::sendUpdate(const json & message) {
+    auto t = world.getTime();
+    
+    json updateJson = {
+        {"type", "update.response"},
+        {"payload", {
+            {"timer", {
+                {"hours", t.hours},
+                {"minutes", t.minutes},
+                {"seconds", t.seconds}
+            }}
+        }}
+    };
+    //consoleOut.write("Sending updateJson: ", updateJson.dump(), '\n');
+    outGoingMessages.push(updateJson);
+}
+
+
+
+// Simulation Control ------------------
+
+void MissileDefenseSimulator::startSimulation(const json & message) {
+    world.startTimer();
+
+    json startJson = {
+        {"type", "start.response"},
+        {"payload", {
+            // empty for now
+        }}
+    };
+    consoleOut.write("Sending startJson: ", startJson.dump(), '\n');
+    outGoingMessages.push(startJson);
+}
+
+void MissileDefenseSimulator::pauseSimulation(const json & message) {
+    world.pauseTimer();
+
+    json pauseJson = {
+        {"type", "pause.response"},
+        {"payload", {
+            // empty for now
+        }}
+    };
+    consoleOut.write("Sending pauseJson: ", pauseJson.dump(), '\n');
+    outGoingMessages.push(pauseJson);
+}
+
+void MissileDefenseSimulator::resetSimulation(const json & message) {
+    world.resetTimer();
+
+    json resetJson = {
+        {"type", "reset.response"},
+        {"payload", {
+            // empty for now
+        }}
+    };
+    consoleOut.write("Sending resetJson: ", resetJson.dump(), '\n');
+    outGoingMessages.push(resetJson);
+}
+
+
+
+// User Options -------------
+
+void MissileDefenseSimulator::updateAutoMode(const json & message) {
+    options->setAuto((message["payload"]["doAuto"]));
+    json reply = {
+        {"type", "doAuto.response"},
+        {"payload", {
+            {"doAuto", message["payload"]["doAuto"]}
+        }}
+    };
+    consoleOut.write("Sending doAuto reply: ", reply.dump(), '\n');
+    outGoingMessages.push(reply);
+}
+
+void MissileDefenseSimulator::updateRadarVis(const json & message) {
+    options->setRadarVis(message["payload"]["radarVis"]);
+    json reply = {
+        {"type", "radarVis.response"},
+        {"payload", {
+            {"radarVis", message["payload"]["radarVis"]}
+        }}
+    };
+    consoleOut.write("Sending radarVis reply: ", reply.dump(), '\n');
+    outGoingMessages.push(reply);
+}
+
+void MissileDefenseSimulator::updateSimSpeed(const json & message) {
+    options->setSimSpeed(message["payload"]["simSpeed"]);
+    json reply = {
+        {"type", "simSpeed.response"},
+        {"payload", {
+            {"simSpeed", message["payload"]["simSpeed"]}
+        }}
+    };
+    consoleOut.write("Sending simSpeed reply: ", reply.dump(), '\n');
+    outGoingMessages.push(reply);
+}
+
+
+
+
+void MissileDefenseSimulator::createMessageHandler() {
+    handler.emplace(
+
+        consoleOut,
+        consoleErr, 
+        incomingMessages,
+
+        [this](const json& message) {
+            this->sendUpdate(message);
+        },
+
+        [this](const json& message) {
+            this->startSimulation(message);
+        },
+
+        [this](const json& message) {
+            this->pauseSimulation(message);
+        },
+
+        [this](const json& message) {
+            this->resetSimulation(message);
+        },
+
+        [this](const json& message) {
+            this->updateAutoMode(message);
+        },
+
+        [this](const json& message) {
+            this->updateRadarVis(message);
+        },
+
+        [this](const json& message) {
+            this->updateSimSpeed(message);
+        }
+    );
+    consoleOut.write("Message handler created.\n");
 }

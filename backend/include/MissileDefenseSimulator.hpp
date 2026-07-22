@@ -4,6 +4,7 @@
 #include "HttpServer.hpp"
 #include "ThreadSafeOutput.hpp"
 #include "MessageHandler.hpp"
+#include "SimulationWorld.hpp"
 
 #include <nlohmann/json.hpp>
 #include <optional>
@@ -11,19 +12,20 @@
 #include <iostream>
 #include <unordered_map>
 
+using json = nlohmann::json;
+
 class MissileDefenseSimulator {
     public:
         MissileDefenseSimulator();
 
         void createWebSocketServer(boost::asio::io_context & ctx, const std::string & address, unsigned short port);
         void createHttpServer(boost::asio::io_context & ctx, const std::string & address, unsigned short port);
-        bool openBrowser(const std::string& url);
         void run();
 
     private:
         
-        std::optional<SimulationOptions> options;      // house all options
-        //SimulationWorld world;          // house true world state
+        std::optional<SimulationOptions> options;       // house all options
+        SimulationWorld world;                          // house true world state
         //ProcessManger manager;          // control child-process lifecycle
         //ComponentRegistry registry;     // house endpoints for components
         std::optional<WebSocketServer> webServer;           // front-end back-end communication
@@ -32,20 +34,36 @@ class MissileDefenseSimulator {
         
 
         // queues for data transmisstion
-        ThreadSafeQueue<nlohmann::json> webSocketIncoming;
-        ThreadSafeQueue<nlohmann::json> webSocketOutGoing;
+        ThreadSafeQueue<nlohmann::json> incomingMessages;
+        ThreadSafeQueue<nlohmann::json> outGoingMessages;
 
         // protected output streams
         ThreadSafeOutput consoleOut = ThreadSafeOutput(std::cout);
         ThreadSafeOutput consoleErr = ThreadSafeOutput(std::cerr);
 
-        // threads
-        std::optional<std::thread> webServerThread;
-        std::optional<std::thread> httpServerThread;
-        std::optional<std::thread> messageProcessingThread;
 
+        
+        // CALL BACK FUNCTIONS ------------------
+    
+        void sendUpdate(const json & message);
+    
+        // Simulation Control 
+        void startSimulation(const json & message);
+        void pauseSimulation(const json & message);
+        void resetSimulation(const json & message);
+        
+        // Options Handling
+        void updateAutoMode(const json & message);
+        void updateRadarVis(const json & message);
+        void updateSimSpeed(const json & message);
+        
         // handle incoming/outgoing messages
-        MessageHandler handler = MessageHandler(consoleOut, consoleErr, webSocketIncoming, webSocketOutGoing);           
+        // job: match messages to corresponding functions in simulator
+        std::optional<MessageHandler> handler;
 
         bool running;
+
+        void createMessageHandler();
+        bool openBrowser(const std::string& url);
+
 };

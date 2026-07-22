@@ -1,14 +1,38 @@
 #include "MessageHandler.hpp"
 #include "ThreadSafeOutput.hpp"
 #include "ThreadSafeQueue.hpp"
+#include "SimulationWorld.hpp"
 #include <nlohmann/json.hpp>
 #include <string>
 #include <unordered_map>
 #include <any>
 
+
 using json = nlohmann::json;
 
-MessageHandler::MessageHandler(ThreadSafeOutput & out, ThreadSafeOutput & error, ThreadSafeQueue<json> & inMessages, ThreadSafeQueue<json> & outMessages) : consoleOut(out), consoleErr(error), incomingMessages(inMessages), outGoingMessages(outMessages) {
+MessageHandler::MessageHandler(
+    ThreadSafeOutput & out, 
+    ThreadSafeOutput & error,
+    ThreadSafeQueue<json> & inMessages,
+    MessageCallback sendUpdateCallback,
+    MessageCallback startCallback,
+    MessageCallback pauseCallback,
+    MessageCallback resetCallback,
+    MessageCallback doAutoCallback,
+    MessageCallback radarVisCallback,
+    MessageCallback simSpeedCallback) 
+    :   consoleOut(out), 
+        consoleErr(error), 
+        incomingMessages(inMessages),
+        sendUpdateCallback(sendUpdateCallback),
+        startCallback(startCallback),
+        pauseCallback(pauseCallback),
+        resetCallback(resetCallback),
+        doAutoCallback(doAutoCallback),
+        radarVisCallback(radarVisCallback),
+        simSpeedCallback(simSpeedCallback) {
+
+    running.store(false);
 
     // populate each map with responses/requests
     
@@ -16,11 +40,20 @@ MessageHandler::MessageHandler(ThreadSafeOutput & out, ThreadSafeOutput & error,
     messageResponses = {
         // lamba function parts:
         // [capture] (parameters) {body}
-        // "this" is needed to capture the MessageHandler instance, since sendUpdateJson is a member function and not static
-        {"update.request", [this] (const json& message) {sendUpdateJson(message);}}
+        // "this" is needed to capture the MessageHandler instance, which is then used to access the callback function variable
+        {"update.request", this->sendUpdateCallback},
+        {"start.request", this->startCallback},
+        {"pause.request", this->pauseCallback},
+        {"reset.request", this->resetCallback},
+        {"doAuto.request", this->doAutoCallback},
+        {"radarVis.request", this->radarVisCallback},
+        {"simSpeed.request", this->simSpeedCallback}
     };
 
     // all types of messages requests stemming from the backend will be here:
+    messageRequests = {
+
+    };
 }
 
 void MessageHandler::run() {
@@ -29,10 +62,17 @@ void MessageHandler::run() {
     consoleOut.write("Backend message handler started.\n");
 
     while(running.load()) {
-        consoleOut.write("[MessageHandler] Attempting to pop message from Queue\n");
+        //consoleOut.write("[MessageHandler] Attempting to pop message from Queue\n");
         auto message = incomingMessages.popOrWait();
-        consoleOut.write("[messageHandler] Processing message: " + message->dump() + '\n');
-        processMessage(message);
+
+        // pop or wait returns null if queue is closed && empty
+        if (!message.has_value()) {
+            break;
+        }
+
+        //consoleOut.write("[messageHandler] Processing message: " + message->dump() + '\n');
+        // dereference as process message expects json, not optional<json>
+        processMessage(*message);
     }
 
     consoleOut.write("Backend message handler stopped.\n");
@@ -49,7 +89,7 @@ void MessageHandler::processMessage(const json & message) {
             consoleErr.write("processMessage Error: message type not recognized: ", type, '\n');
             return;
         }
-        consoleOut.write("[MessageHandler -> processMessage()]: attempting to call message handler.\n");
+        //consoleOut.write("[MessageHandler -> processMessage()]: attempting to call message handler.\n");
         // second part of the handler is the function
         handler->second(message);
     } 
@@ -60,16 +100,4 @@ void MessageHandler::processMessage(const json & message) {
 
 nlohmann::json MessageHandler::getJsonRequest(const std::string & type) {
     return {"type", "null"};
-}
-
-void MessageHandler::sendUpdateJson(const json& message) {
-    json updateJson = {
-            {"type", "update.response"},
-            {"payload", {
-                {"hours", 1},
-                {"minutes", 21},
-                {"seconds", 55}
-            }}
-        };
-    outGoingMessages.push(updateJson);
 }

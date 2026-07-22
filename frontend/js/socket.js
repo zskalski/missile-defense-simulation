@@ -14,7 +14,7 @@ websocket.addEventListener("message", (event) => {
         return;
     }
 
-    console.log("RECEIVED:", message);
+    //console.log("RECEIVED:", message);
 
     try {
         processMessage(message);

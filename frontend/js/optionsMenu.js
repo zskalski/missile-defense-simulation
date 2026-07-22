@@ -38,7 +38,7 @@ play.addEventListener('click', () => {
     pressedButton(playImg);
     releasedButton(pauseImg);
 
-    startTimer();
+    sendSimulationPlayRequest();
 
     // console.log("play:"+ options.play);
     // console.log("pause:"+ options.pause);
@@ -53,7 +53,7 @@ pause.addEventListener('click', () => {
     pressedButton(pauseImg);
     releasedButton(playImg);
 
-    pauseTimer();
+    sendSimulationPauseRequest();
 
     // console.log("play:"+ options.play);
     // console.log("pause:"+ options.pause);
@@ -68,9 +68,7 @@ reset.addEventListener('click', () => {
     releasedButton(playImg);
     releasedButton(pauseImg);
 
-    resetMetrics();
-    clearGrid();
-    redrawCanvas(options);
+    sendSimulationResetRequest();
     
     // console.log("play:"+ options.play);
     // console.log("pause:"+ options.pause);
@@ -96,16 +94,22 @@ function releasedButton(img) {
 
 autoCheckbox.addEventListener('change', function(event) {
     if(this.checked) {
-        options.doAuto = true;
-        autoTooltip.textContent = "ON";
-        autoTooltip.style.left = `52px`;
+        sendSimulationAutoRequest(true);
     } else {
-        options.doAuto = false;
-        autoTooltip.textContent = "OFF";
-        autoTooltip.style.left = `0px`;
+        sendSimulationAutoRequest(false);
     }
     // console.log("doAuto:" + options.doAuto);
 });
+
+function updateAutoCheckBox(doAuto) {
+    if (doAuto) {
+        autoTooltip.textContent = "ON";
+        autoTooltip.style.left = `52px`;
+    } else {
+        autoTooltip.textContent = "OFF";
+        autoTooltip.style.left = `0px`;
+    }
+}
 
 trackCheckbox.addEventListener('change', function(event) {
     if(this.checked) {
@@ -186,16 +190,22 @@ addSliderEventListeners(simulationSlider, simulationTooltip);
 // when mouse / pointer is released
 radarSlider.addEventListener('pointerup', () => {
     radarTooltip.style.display = "none";         // make the tooltip disappear
-    options.radarVis = radarSlider.value;        // update value in options data struct
-    redrawCanvas(options)
-    // console.log("radar vis:" + options.radarVis);
+    sendSimulationRadarVisRequest(Number(radarSlider.value));
 });
 
+function updateRadarVis(radarVis) {
+    options.radarVis = radarVis;       // update value in options data struct
+    redrawCanvas(options);
+}
+
 simulationSlider.addEventListener('pointerup', () => {
-    simulationTooltip.style.display = "none";             
-    options.simRate = simulationSlider.value;
-    // console.log("sim rate:" + options.simRate);
+    simulationTooltip.style.display = "none";        
+    sendSimulationSpeedRequest(Number(simulationSlider.value));     
 });
+
+function updateSimSpeed(simSpeed) {
+    options.simRate = simSpeed;
+}
 
 updateSliderTooltip(radarSlider, radarTooltip);
 updateSliderTooltip(simulationSlider, simulationTooltip);

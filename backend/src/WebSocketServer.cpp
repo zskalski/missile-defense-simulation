@@ -40,9 +40,9 @@ int WebSocketServer::run() {
 
     while (running) {
         try {
-            consoleOut.write("going into accept client()\n");
+            //consoleOut.write("going into accept client()\n");
             acceptClient();
-            consoleOut.write("going into handle client()\n");
+            //consoleOut.write("going into handle client()\n");
             handleClient();
         }
         catch (const boost::system::system_error& error) {
@@ -120,7 +120,7 @@ void WebSocketServer::acceptClient() {
 
 void WebSocketServer::handleClient() {
     while (running && webSocketStream) {
-        consoleOut.write("Inside of handleclient(), attempting to read message\n");
+        //consoleOut.write("Inside of handleclient(), attempting to read message\n");
         ReadResult result = readMessage();
         if (result == ReadResult::InvalidMessage)
             continue;           // skip sending message if no message is read
@@ -129,7 +129,7 @@ void WebSocketServer::handleClient() {
             return;
         }
         if (result == ReadResult::NormalRequest)
-            consoleOut.write("Recieved normal request, attempting to sendMessage()\n");
+            //consoleOut.write("Recieved normal request, attempting to sendMessage()\n");
             // if false from sendMessage, means the simulation thread has shutdown the queue
             if (!sendMessage()) {
                 running = false;
@@ -145,18 +145,18 @@ WebSocketServer::ReadResult WebSocketServer::readMessage() {
     boost::beast::flat_buffer buffer;
     webSocketStream->read(buffer);
     const std::string messageText = boost::beast::buffers_to_string(buffer.data());
-    consoleOut.write("Raw message: ", messageText, '\n');
+    //consoleOut.write("Raw message: ", messageText, '\n');
 
     try {
         json message = processMessage(messageText);
-        consoleOut.write("[readMessage]: Pushing message into incomingMessagesQueue\n");
+        //consoleOut.write("[readMessage]: Pushing message into incomingMessagesQueue\n");
         incomingMessages.push(message);
 
         if (message.at("type") == "shutdown") {
             consoleOut.write("Shutdown messaged recieved.\n");
             return ReadResult::ShutdownRequest;
         }
-        consoleOut.write( "Message: ", message, "\nSuccessfully added to the queue.\n");
+        //consoleOut.write( "Message: ", message, "\nSuccessfully added to the queue.\n");
     }
     catch (const json::exception & error) {
         consoleErr.write("JSON error: ", error.what(), '\n');
@@ -197,7 +197,7 @@ bool WebSocketServer::sendMessage() {
 
 json WebSocketServer::processMessage(const std::string& message) {
     const json parsedMessage = json::parse(message);
-    consoleOut.write("Parsed message: ", parsedMessage, '\n');
+    //consoleOut.write("Parsed message: ", parsedMessage, '\n');
     return parsedMessage;
 }
 
