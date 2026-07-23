@@ -140,7 +140,11 @@ mapArea.addEventListener("drop", event => {
     
     newPiece.id = getNewPieceID(newPiece);
 
-    sendSimulationPlacementRequest(newPiece);
+    if (newPiece.dataset.type == "enemy-missile" || newPiece.dataset.type == "enemy-missile-barrage") {
+        openMissilePopUp(newPiece);
+    } else {
+        sendSimulationPlacementRequest(newPiece);
+    }
 
     canDrawRadars = true;
 });

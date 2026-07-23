@@ -5,12 +5,15 @@
 #include "ThreadSafeOutput.hpp"
 #include "MessageHandler.hpp"
 #include "SimulationWorld.hpp"
+#include "components/Radar.hpp"
+#include "components/Missile.hpp"
 
 #include <nlohmann/json.hpp>
 #include <optional>
 #include <thread>
 #include <iostream>
 #include <unordered_map>
+#include <vector>
 
 using json = nlohmann::json;
 
@@ -21,27 +24,35 @@ class MissileDefenseSimulator {
         void createWebSocketServer(boost::asio::io_context & ctx, const std::string & address, unsigned short port);
         void createHttpServer(boost::asio::io_context & ctx, const std::string & address, unsigned short port);
         void run();
-
+    
     private:
+        // Pieces (for now) - later change to own processes
+        std::vector<Radar> radars;
+        //std::vector<CommandCenter> commandCenters;
+        //std::vector<ProtectedTarget> protectedTargets;
+        //std::vector<Interceptor> interceptors;
+        std::vector<Missile> missiles;
+        //std::vector<Tree> trees;
+        //std::vector<Lake> lakes;
+        // barrages will spawn 100 missiles in random places
+
+        // protected output streams
+        ThreadSafeOutput consoleOut = ThreadSafeOutput(std::cout);
+        ThreadSafeOutput consoleErr = ThreadSafeOutput(std::cerr);
         
-        std::optional<SimulationOptions> options;       // house all options
+        SimulationOptions options;                      // house all options
         SimulationWorld world;                          // house true world state
         //ProcessManger manager;          // control child-process lifecycle
         //ComponentRegistry registry;     // house endpoints for components
         std::optional<WebSocketServer> webServer;           // front-end back-end communication
         std::optional<HttpServer> httpServer;               // front-end http get requests
         //messageRouter router;           // route messages to components
-        
 
         // queues for data transmisstion
         ThreadSafeQueue<nlohmann::json> incomingMessages;
         ThreadSafeQueue<nlohmann::json> outGoingMessages;
 
-        // protected output streams
-        ThreadSafeOutput consoleOut = ThreadSafeOutput(std::cout);
-        ThreadSafeOutput consoleErr = ThreadSafeOutput(std::cerr);
-
-
+        void gameLoop();
         
         // CALL BACK FUNCTIONS ------------------
     
@@ -69,18 +80,7 @@ class MissileDefenseSimulator {
 
         bool running;
 
-        int totalCommandCenters;
-        int totalRadars;
-        int totalTargets;
-        int totalInterceptors;
-        int totalEnemyMissiles;
-        int totalEnemyMissileBarrages;
-        int totalTrees;
-        int totalLakes;
-
-
         // Helper Functions --------------
         bool openBrowser(const std::string& url);
-        void addPieceToTotals(const std::string type);
 
 };

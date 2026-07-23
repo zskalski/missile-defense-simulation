@@ -198,18 +198,75 @@ function recieveSimulationSpeedUpdate(message) {
 
 // Placement Logic
 function sendSimulationPlacementRequest(piece) {
+    const row = Number(piece.dataset.row);
+    const col = Number(piece.dataset.col);
+    const x = Math.floor((col * cellWidth) + (0.5 * cellWidth));
+    const y = Math.floor((row * cellHeight) + (0.5 * cellHeight));
+
+    const basePayload = {
+        id: piece.id,
+        type: piece.dataset.type,
+        position: {
+            row: row,
+            column: col
+        }
+    };
+
+    let payload;
+
+    switch (piece.dataset.type) {
+        case "protected-target":
+        case "command-center":
+        case "interceptor":
+        case "tree":
+        case "lake":
+            payload = {
+                ...basePayload
+            };
+            break;
+
+        case "radar":
+            payload = {
+                ...basePayload,
+                x: x,
+                y: y
+            };
+            break;
+
+        case "enemy-missile":
+            payload = {
+                ...basePayload,
+                x: x,
+                y: y,
+                target_id: piece.dataset.target_id,
+                speed: Number(piece.dataset.speed),
+                x_dest: Number(piece.dataset.x_dest),
+                y_dest: Number(piece.dataset.y_dest)
+            };
+            break;
+
+        case "enemy-missile-barrage":
+            payload = {
+                ...basePayload,
+                x: x,
+                y: y,
+                target_id: piece.dataset.target_id,
+                speed: Number(piece.dataset.speed),
+                x_dest: Number(piece.dataset.x_dest),
+                y_dest: Number(piece.dataset.y_dest)
+            };
+            break;
+
+        default:
+            console.error("Placement request not implemented for piece type:", piece.dataset.type);
+            return;
+    }
+
     pendingPieces.set(piece.id, piece);
 
     sendMessage({
         type: "placement.request",
-        payload: {
-            id: piece.id,
-            type: piece.dataset.type,
-            position: {
-                row: Number(piece.dataset.row),
-                column: Number(piece.dataset.col)
-            }
-        }
+        payload: payload
     });
 }
 

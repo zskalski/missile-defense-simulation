@@ -1,4 +1,6 @@
 
+#pragma once
+
 class SimulationOptions {
     public:
         SimulationOptions(bool autoM, int radar, int sim);

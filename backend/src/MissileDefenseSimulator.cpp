@@ -12,16 +12,11 @@
 #include <string>
 
 MissileDefenseSimulator::MissileDefenseSimulator()
-    : incomingMessages(), outGoingMessages(), running(false), world(consoleOut, consoleErr) {
-        totalCommandCenters = 0;
-        totalRadars = 0;
-        totalTargets = 0;
-        totalInterceptors = 0;
-        totalEnemyMissiles = 0;
-        totalEnemyMissileBarrages = 0;
-        totalTrees = 0;
-        totalLakes = 0;
-}
+    : options(false, 50, 1),
+      world(consoleOut, consoleErr, options, radars, missiles),
+      incomingMessages(),
+      outGoingMessages(),
+      running(false) {}
 
 void MissileDefenseSimulator::createWebSocketServer(boost::asio::io_context & ctx, const std::string & address, unsigned short port) {
     // construct WebSocketServer in-place to avoid copying/moving
@@ -70,19 +65,20 @@ void MissileDefenseSimulator::run() {
     std::thread httpServerThread([this]() { httpServer->run(); });
     std::thread webServerThread([this]() { webServer->run(); });
     std::thread messageProcessingThread([this]() { handler->run(); });
+    std::thread simulationThread([this]() {gameLoop();});
 
     std::string url = "http://" + httpServer->getEndpoint().address().to_string() + ':' + std::to_string(httpServer->getEndpoint().port());
     openBrowser(url);
-
-    // populate options with default values
-    options = SimulationOptions(false, 50, 1);
 
     messageProcessingThread.join();
     webServerThread.join();
     httpServerThread.join();
 }
 
-
+void MissileDefenseSimulator::gameLoop() {
+    // create a game loop that uses ticks from frontend
+    // gameloop should call world.update() each tick
+}
 
 // State Updates ---------------------
 
@@ -97,18 +93,13 @@ void MissileDefenseSimulator::sendUpdate(const json & message) {
                 {"minutes", t.minutes},
                 {"seconds", t.seconds}
             }},
-            {"totalPieces", {
-                {"commandCenters", totalCommandCenters},
-                {"radars", totalRadars},
-                {"targets", totalTargets},
-                {"interceptors", totalInterceptors},
-                {"enemyMissiles", totalEnemyMissiles},
-                {"enemyMissileBarrages", totalEnemyMissileBarrages},
-                {"trees", totalTrees},
-                {"lakes", totalLakes}
-            }},
+            {"totalPieces", world.getPieceTotals()},
             {"tracks", {
                 {"total", 0}
+            }},
+            {"components", {
+                {"radars", radars},
+                {"missiles", missiles}
             }}
         }}
     };
@@ -149,15 +140,7 @@ void MissileDefenseSimulator::pauseSimulation(const json & message) {
 
 void MissileDefenseSimulator::resetSimulation(const json & message) {
     world.resetTimer();
-
-    totalCommandCenters = 0;
-    totalRadars = 0;
-    totalTargets = 0;
-    totalInterceptors = 0;
-    totalEnemyMissiles = 0;
-    totalEnemyMissileBarrages = 0;
-    totalTrees = 0;
-    totalLakes = 0;
+    world.resetPieceTotals();
 
     json resetJson = {
         {"type", "reset.response"},
@@ -174,7 +157,7 @@ void MissileDefenseSimulator::resetSimulation(const json & message) {
 // User Options -------------
 
 void MissileDefenseSimulator::updateAutoMode(const json & message) {
-    options->setAuto((message["payload"]["doAuto"]));
+    options.setAuto((message["payload"]["doAuto"]));
     json reply = {
         {"type", "doAuto.response"},
         {"payload", {
@@ -186,7 +169,8 @@ void MissileDefenseSimulator::updateAutoMode(const json & message) {
 }
 
 void MissileDefenseSimulator::updateRadarVis(const json & message) {
-    options->setRadarVis(message["payload"]["radarVis"]);
+    options.setRadarVis(message["payload"]["radarVis"]);
+    world.updateRadarVis();
     json reply = {
         {"type", "radarVis.response"},
         {"payload", {
@@ -198,7 +182,7 @@ void MissileDefenseSimulator::updateRadarVis(const json & message) {
 }
 
 void MissileDefenseSimulator::updateSimSpeed(const json & message) {
-    options->setSimSpeed(message["payload"]["simSpeed"]);
+    options.setSimSpeed(message["payload"]["simSpeed"]);
     json reply = {
         {"type", "simSpeed.response"},
         {"payload", {
@@ -214,19 +198,17 @@ void MissileDefenseSimulator::updateSimSpeed(const json & message) {
 // Placement Validation ---------------------
 
 void MissileDefenseSimulator::addPiece(const json & message) {
+    
     const json payload = message.at("payload");
-
     std::string id = payload.at("id").get<std::string>();
-    std::string type = payload.at("type").get<std::string>();
 
     const json position = payload.at("position");
     int row = position.at("row").get<int>();
     int col = position.at("column").get<int>();
 
-    const bool placed = world.addPiece(id, type, row, col);
+    const bool placed = world.addPiece(message);
     
     if (placed) {
-        addPieceToTotals(type);
         consoleOut.write(id, " placed at row: ", row, ", col: ", col, '\n');
     } else {
         consoleOut.write("Placement error: ", id, " could not be placed at row: ", row, ", col: ", col, '\n');
@@ -255,27 +237,6 @@ void MissileDefenseSimulator::addPiece(const json & message) {
     //   }
     // }
 }
-
-void MissileDefenseSimulator::addPieceToTotals(const std::string type) {
-    if (type == "command-center") {
-        totalCommandCenters += 1;
-    } else if (type == "radar") {
-        totalRadars += 1;
-    } else if (type == "protected-target") {
-        totalTargets += 1;
-    } else if (type == "interceptor") {
-        totalInterceptors += 1;
-    } else if (type == "enemy-missile") {
-        totalEnemyMissiles += 1;
-    } else if (type == "enemy-missile-barrage") {
-        totalEnemyMissileBarrages += 1;
-    } else if (type == "tree") {
-        totalTrees += 1;
-    } else if (type == "lake") {
-        totalLakes += 1;
-    }
-}
-
 
 void MissileDefenseSimulator::createMessageHandler() {
     handler.emplace(
