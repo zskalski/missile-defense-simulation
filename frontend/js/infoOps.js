@@ -59,9 +59,9 @@ function showObjectDetails(piece) {
 }
 
 function updateTimeMetric(time) {timeMetric.textContent = time;}
-function updateTargetMetric() {targetMetric.textContent = 0;}
+function updateTargetMetric() {targetMetric.textContent = placedTarget;}
 function updateTrackMetric(tracks) {trackMetric.textContent = tracks;}
-function updateInterceptorMetric() {interceptorMetric.textContent = 0;}
+function updateInterceptorMetric() {interceptorMetric.textContent = placedInterceptor;}
 
 function resetMetrics() {
     targetMetric.textContent = 0;

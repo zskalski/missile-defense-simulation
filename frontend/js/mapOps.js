@@ -105,8 +105,6 @@ function drawSingleRadarVisibility(piece) {
 
         curRadius += 1;
     }
-
-    // TO DO: make radar visibility area more transparent as if fades out (maybe also add logic where it gets more unlikely to detect missiles the further away they are from the radar)
 }
 
 
@@ -152,36 +150,28 @@ function getNewPieceID(piece) {
     let dataType = piece.dataset.type;
     switch(dataType) {
         case "command-center":
-            placedCommandCenter++;
-            pieceNumber = placedCommandCenter;
+            pieceNumber = placedCommandCenter + 1;
             break;
         case "radar":
-            placedRadar++;
-            pieceNumber = placedRadar;
+            pieceNumber = placedRadar + 1;
             break;
         case "protected-target":
-            placedTarget++;
-            pieceNumber = placedTarget;
+            pieceNumber = placedTarget + 1;
             break;
         case "interceptor":
-            placedInterceptor++;
-            pieceNumber = placedInterceptor;
+            pieceNumber = placedInterceptor + 1;
             break;
         case "enemy-missile":
-            placedEnemyMissile++;
-            pieceNumber = placedEnemyMissile;
+            pieceNumber = placedEnemyMissile + 1;
             break;
         case "enemy-missile-barrage":
-            placedEnemyMissileBarrage++;
-            pieceNumber = placedEnemyMissileBarrage;
+            pieceNumber = placedEnemyMissileBarrage + 1;
             break;
         case "tree":
-            placedTree++;
-            pieceNumber = placedTree;
+            pieceNumber = placedTree + 1;
             break;
         case "lake":
-            placedLake++;
-            pieceNumber = placedLake;
+            pieceNumber = placedLake + 1;
             break;
     } return `${dataType}-${pieceNumber}`;
 }

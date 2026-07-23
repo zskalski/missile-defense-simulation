@@ -13,6 +13,14 @@
 
 MissileDefenseSimulator::MissileDefenseSimulator()
     : incomingMessages(), outGoingMessages(), running(false), world(consoleOut, consoleErr) {
+        totalCommandCenters = 0;
+        totalRadars = 0;
+        totalTargets = 0;
+        totalInterceptors = 0;
+        totalEnemyMissiles = 0;
+        totalEnemyMissileBarrages = 0;
+        totalTrees = 0;
+        totalLakes = 0;
 }
 
 void MissileDefenseSimulator::createWebSocketServer(boost::asio::io_context & ctx, const std::string & address, unsigned short port) {
@@ -88,9 +96,23 @@ void MissileDefenseSimulator::sendUpdate(const json & message) {
                 {"hours", t.hours},
                 {"minutes", t.minutes},
                 {"seconds", t.seconds}
+            }},
+            {"totalPieces", {
+                {"commandCenters", totalCommandCenters},
+                {"radars", totalRadars},
+                {"targets", totalTargets},
+                {"interceptors", totalInterceptors},
+                {"enemyMissiles", totalEnemyMissiles},
+                {"enemyMissileBarrages", totalEnemyMissileBarrages},
+                {"trees", totalTrees},
+                {"lakes", totalLakes}
+            }},
+            {"tracks", {
+                {"total", 0}
             }}
         }}
     };
+
     //consoleOut.write("Sending updateJson: ", updateJson.dump(), '\n');
     outGoingMessages.push(updateJson);
 }
@@ -127,6 +149,15 @@ void MissileDefenseSimulator::pauseSimulation(const json & message) {
 
 void MissileDefenseSimulator::resetSimulation(const json & message) {
     world.resetTimer();
+
+    totalCommandCenters = 0;
+    totalRadars = 0;
+    totalTargets = 0;
+    totalInterceptors = 0;
+    totalEnemyMissiles = 0;
+    totalEnemyMissileBarrages = 0;
+    totalTrees = 0;
+    totalLakes = 0;
 
     json resetJson = {
         {"type", "reset.response"},
@@ -194,10 +225,12 @@ void MissileDefenseSimulator::addPiece(const json & message) {
 
     const bool placed = world.addPiece(id, type, row, col);
     
-    if (placed) 
+    if (placed) {
+        addPieceToTotals(type);
         consoleOut.write(id, " placed at row: ", row, ", col: ", col, '\n');
-    else 
+    } else {
         consoleOut.write("Placement error: ", id, " could not be placed at row: ", row, ", col: ", col, '\n');
+    }
 
     json reply = {
         {"type", "placement.response"},
@@ -221,6 +254,26 @@ void MissileDefenseSimulator::addPiece(const json & message) {
     //     }
     //   }
     // }
+}
+
+void MissileDefenseSimulator::addPieceToTotals(const std::string type) {
+    if (type == "command-center") {
+        totalCommandCenters += 1;
+    } else if (type == "radar") {
+        totalRadars += 1;
+    } else if (type == "protected-target") {
+        totalTargets += 1;
+    } else if (type == "interceptor") {
+        totalInterceptors += 1;
+    } else if (type == "enemy-missile") {
+        totalEnemyMissiles += 1;
+    } else if (type == "enemy-missile-barrage") {
+        totalEnemyMissileBarrages += 1;
+    } else if (type == "tree") {
+        totalTrees += 1;
+    } else if (type == "lake") {
+        totalLakes += 1;
+    }
 }
 
 

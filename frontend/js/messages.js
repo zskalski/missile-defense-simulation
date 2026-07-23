@@ -93,6 +93,19 @@ function applyUpdate(message) {
     const displaySeconds = String(message.payload.timer.seconds).padStart(2, '0');
 
     updateTimeMetric(`${displayHours}:${displayMinutes}:${displaySeconds}`);
+
+    // update totals for each piece type
+    placedCommandCenter = message.payload.totalPieces.commandCenters;
+    placedRadar = message.payload.totalPieces.radars;
+    placedTarget = message.payload.totalPieces.targets;
+    placedInterceptor = message.payload.totalPieces.interceptors;
+    placedEnemyMissile = message.payload.totalPieces.enemyMissiles;
+    placedEnemyMissileBarrage = message.payload.totalPieces.enemyMissileBarrages;
+    placedTree = message.payload.totalPieces.trees;
+    placedLake = message.payload.totalPieces.lakes;
+    updateTargetMetric();
+    updateTrackMetric(message.payload.tracks.total);
+    updateInterceptorMetric();
 }
 
 

@@ -63,10 +63,24 @@ class MissileDefenseSimulator {
         // handle incoming/outgoing messages
         // job: match messages to corresponding functions in simulator
         std::optional<MessageHandler> handler;
+        void createMessageHandler();
+
+        // Data --------------------------
 
         bool running;
 
-        void createMessageHandler();
+        int totalCommandCenters;
+        int totalRadars;
+        int totalTargets;
+        int totalInterceptors;
+        int totalEnemyMissiles;
+        int totalEnemyMissileBarrages;
+        int totalTrees;
+        int totalLakes;
+
+
+        // Helper Functions --------------
         bool openBrowser(const std::string& url);
+        void addPieceToTotals(const std::string type);
 
 };
