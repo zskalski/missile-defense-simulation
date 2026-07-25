@@ -73,6 +73,42 @@ bool SimulationWorld::removePiece(std::string id) {
     return map.removeObject(id);
 }
 
+void SimulationWorld::reset() {
+    resetTimer();
+    resetPieceTotals();
+    map.reset();
+    radars.clear();
+    missiles.clear();
+    detectedTargets.clear();
+    consoleOut.write("SimulationWorld: reset world state.\n");
+}
+
+void SimulationWorld::pause() {
+    std::lock_guard<std::mutex> lock(timeMutex);
+    timer.pause(); 
+}
+
+void SimulationWorld::update() {
+    for (auto & missile : missiles) {
+        missile.advance();
+    }
+
+    detectedTargets.clear();
+
+    for (auto & missile : missiles) {
+        if (missile.isBlownUp()) {
+            continue;
+        }
+
+        for (auto & radar : radars) {
+            if (radar.canDetect(missile)) {
+                detectedTargets.emplace_back(missile.getX(), missile.getY(), missile.getSpeed());
+                break;
+            }
+        }
+    }
+}
+
 json SimulationWorld::getPieceTotals() const {
     return {
         {"commandCenters", totalCommandCenters},

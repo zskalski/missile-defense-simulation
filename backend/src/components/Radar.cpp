@@ -23,6 +23,10 @@ void Radar::setRange(int rnge) {
     range = rnge;
 }
 
+bool Radar::canDetect(Missile missile) {
+    return isInRange(missile);
+}
+
 bool Radar::isInRange(Missile m) {
     int maxVisibleDistance = range * 5 + 60;
     int distanceFromRadar = std::hypot(m.getX() - x, m.getY() - y);

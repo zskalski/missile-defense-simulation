@@ -1,15 +1,17 @@
 
 #pragma once
 
+#include <mutex>
+
 class SimulationOptions {
     public:
         SimulationOptions(bool autoM, int radar, int sim);
 
-        bool getAuto();
-        int getRadarVis();
-        int getSimSpeed();
+        bool getAuto() const;
+        int getRadarVis() const;
+        int getSimSpeed() const;
 
-        void printOptions();        // for debug
+        void printOptions() const;        // for debug
 
         // returns false for error
         bool setAuto(bool mode);
@@ -17,6 +19,8 @@ class SimulationOptions {
         bool setSimSpeed(unsigned short speed);
 
     private:
+        mutable std::mutex optionsMutex;
+
         bool autoMode;
         int radarVis;
         int simSpeed;

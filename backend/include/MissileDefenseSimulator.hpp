@@ -14,6 +14,7 @@
 #include <iostream>
 #include <unordered_map>
 #include <vector>
+#include <atomic>
 
 using json = nlohmann::json;
 
@@ -78,9 +79,12 @@ class MissileDefenseSimulator {
 
         // Data --------------------------
 
-        bool running;
+        std::atomic<bool> running;
+        std::atomic<bool> simRunning;
+        std::optional<std::thread> simulationThread;
 
         // Helper Functions --------------
         bool openBrowser(const std::string& url);
+        void stopSimulationLoop();
 
 };

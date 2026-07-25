@@ -106,6 +106,9 @@ function applyUpdate(message) {
     updateTargetMetric();
     updateTrackMetric(message.payload.tracks.total);
     updateInterceptorMetric();
+
+    // update missile locations
+    updateMissileLocation(message.payload.components.missiles);
 }
 
 

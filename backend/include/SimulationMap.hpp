@@ -15,6 +15,7 @@ class SimulationMap {
         
         bool addObject(std::string id, std::string type, int row, int col);
         bool removeObject(std::string id);
+        void reset();
 
     private:
         std::optional<std::pair<int, int>> idToPosition(std::string id);

@@ -14,6 +14,7 @@ class Missile {
         int getSpeed();
         int getXDestination();
         int getYDestination();
+        double getDirectionDegrees() const;
         std::string getTargetID();
         bool isBlownUp();
 
@@ -24,6 +25,8 @@ class Missile {
     private:
         int x;
         int y;
+        double preciseX;
+        double preciseY;
         int speed;
         int x_destination;
         int y_destination;

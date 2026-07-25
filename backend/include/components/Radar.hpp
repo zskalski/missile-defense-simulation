@@ -13,6 +13,7 @@ class Radar {
     public:
         Radar(int x, int y, int range, std::string id);
         std::vector<DetectedTarget> scan(std::vector<Missile> missiles);
+        bool canDetect(Missile missile);
         void setRange(int range);
         friend void to_json(nlohmann::json& j, const Radar& radar);
     private:

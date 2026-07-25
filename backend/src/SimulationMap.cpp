@@ -69,6 +69,12 @@ bool SimulationMap::removeObject(std::string id) {
     return true;
 }
 
+void SimulationMap::reset() {
+    grid = {};
+    positionLookup.clear();
+    consoleOut.write("SimulationMap: reset map state.\n");
+}
+
 std::optional<std::pair<int, int>> SimulationMap::idToPosition(std::string id) {
     auto itr = positionLookup.find(id);
     if (itr != positionLookup.end()) {

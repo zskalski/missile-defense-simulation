@@ -10,13 +10,15 @@
 #include <windows.h>
 #include <shellapi.h>
 #include <string>
+#include <chrono>
 
 MissileDefenseSimulator::MissileDefenseSimulator()
     : options(false, 50, 1),
       world(consoleOut, consoleErr, options, radars, missiles),
       incomingMessages(),
       outGoingMessages(),
-      running(false) {}
+      running(false),
+      simRunning(false) {}
 
 void MissileDefenseSimulator::createWebSocketServer(boost::asio::io_context & ctx, const std::string & address, unsigned short port) {
     // construct WebSocketServer in-place to avoid copying/moving
@@ -65,7 +67,6 @@ void MissileDefenseSimulator::run() {
     std::thread httpServerThread([this]() { httpServer->run(); });
     std::thread webServerThread([this]() { webServer->run(); });
     std::thread messageProcessingThread([this]() { handler->run(); });
-    std::thread simulationThread([this]() {gameLoop();});
 
     std::string url = "http://" + httpServer->getEndpoint().address().to_string() + ':' + std::to_string(httpServer->getEndpoint().port());
     openBrowser(url);
@@ -76,8 +77,27 @@ void MissileDefenseSimulator::run() {
 }
 
 void MissileDefenseSimulator::gameLoop() {
-    // create a game loop that uses ticks from frontend
-    // gameloop should call world.update() each tick
+
+    int tickRate;
+    int tickNumber = 0;
+
+    while(simRunning.load()) {
+
+        tickRate = options.getSimSpeed() * 10;
+        if (tickRate <= 0) {
+            tickRate = 10;
+        }
+
+        auto tickDuration =  std::chrono::milliseconds(1000 / tickRate);
+        auto nextTick = std::chrono::steady_clock::now();
+        nextTick += tickDuration;
+
+        tickNumber++;
+
+        world.update();
+
+        std::this_thread::sleep_until(nextTick);
+    }
 }
 
 // State Updates ---------------------
@@ -113,7 +133,15 @@ void MissileDefenseSimulator::sendUpdate(const json & message) {
 // Simulation Control ------------------
 
 void MissileDefenseSimulator::startSimulation(const json & message) {
-    world.startTimer();
+    
+    if (!simRunning.exchange(true)) {
+        if (simulationThread && simulationThread->joinable()) {
+            simulationThread->join();
+        }
+
+        world.startTimer();
+        simulationThread.emplace([this]() { gameLoop(); });
+    }
 
     json startJson = {
         {"type", "start.response"},
@@ -126,7 +154,9 @@ void MissileDefenseSimulator::startSimulation(const json & message) {
 }
 
 void MissileDefenseSimulator::pauseSimulation(const json & message) {
-    world.pauseTimer();
+    
+    stopSimulationLoop();
+    world.pause();
 
     json pauseJson = {
         {"type", "pause.response"},
@@ -139,8 +169,9 @@ void MissileDefenseSimulator::pauseSimulation(const json & message) {
 }
 
 void MissileDefenseSimulator::resetSimulation(const json & message) {
-    world.resetTimer();
-    world.resetPieceTotals();
+    
+    stopSimulationLoop();
+    world.reset();
 
     json resetJson = {
         {"type", "reset.response"},
@@ -206,7 +237,7 @@ void MissileDefenseSimulator::addPiece(const json & message) {
     int row = position.at("row").get<int>();
     int col = position.at("column").get<int>();
 
-    const bool placed = world.addPiece(message);
+    const bool placed = !simRunning.load() && world.addPiece(message);
     
     if (placed) {
         consoleOut.write(id, " placed at row: ", row, ", col: ", col, '\n');
@@ -236,6 +267,14 @@ void MissileDefenseSimulator::addPiece(const json & message) {
     //     }
     //   }
     // }
+}
+
+void MissileDefenseSimulator::stopSimulationLoop() {
+    simRunning = false;
+
+    if (simulationThread && simulationThread->joinable()) {
+        simulationThread->join();
+    }
 }
 
 void MissileDefenseSimulator::createMessageHandler() {

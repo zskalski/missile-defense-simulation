@@ -319,3 +319,77 @@ mapCanvas.addEventListener("mousemove", (event) => {
 mapCanvas.addEventListener("mouseout", () => {
     coordinateBox.textContent = "X: - Y: -";
 });
+
+
+// missile movement updates
+function updateMissileLocation(missiles) {
+    // missiles is an array of missiles
+    const spriteCenterOffset = 32;
+
+    for (const missile of missiles) {
+        const missileElement = document.getElementById(missile.id);
+
+        const id = missile.id;
+        const x = missile.position.x;
+        const y = missile.position.y;
+        const direction = missile.direction?.degrees ?? 45;
+        const blownUp = missile.blownUp;
+
+        if (!missileElement) {
+            continue;
+        }
+
+        missileElement.style.left = `${x - spriteCenterOffset}px`;
+        missileElement.style.top = `${y - spriteCenterOffset}px`;
+        missileElement.dataset.placed_x = x;
+        missileElement.dataset.placed_y = y;
+        missileElement.dataset.direction = direction;
+
+        const missileImage = missileElement.querySelector("img");
+        if (missileImage) {
+            // ensure that the img is rotated around its center
+            missileImage.style.transformOrigin = "center center";
+            missileImage.style.transform = `rotate(${direction - 315}deg)`;
+            //missileImage.style.transform = `rotate(${direction - 45}deg)`;
+        }
+
+        if (blownUp) {
+            applyMissileImpact(missile, missileElement);
+        }
+    }
+}
+
+function applyMissileImpact(missile, missileElement) {
+    if (missileElement.dataset.blown_up == "true") {
+        return;
+    }
+
+    missileElement.dataset.blown_up = "true";
+    missileElement.dataset.type = "explosion";
+
+    const missileImage = missileElement.querySelector("img");
+    if (missileImage) {
+        missileImage.src = "assets/imgs/sprites/explosion.png";
+        missileImage.alt = "Explosion";
+        missileImage.title = "Explosion";
+        missileImage.style.transform = "none";
+        missileElement.style.left = `${Number(missileElement.dataset.placed_x) - 32}px`;
+        missileElement.style.top = `${Number(missileElement.dataset.placed_y) - 37}px`;
+    }
+
+    const targetElement = document.getElementById(missile.target_id);
+    const targetImage = targetElement?.querySelector("img");
+
+    if (targetImage) {
+        targetElement.dataset.destroyed = "true";
+        targetImage.src = "assets/imgs/sprites/protected-target-destroyed.png";
+        targetImage.alt = "Destroyed Protected Target";
+        targetImage.title = "Destroyed Protected Target";
+    }
+
+    addToEventLog(`${missile.id}: hit ${missile.target_id}`);
+
+    setTimeout(() => {
+        missileElement.remove();
+    }, 1000);
+}

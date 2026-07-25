@@ -5,6 +5,7 @@
 #include "ThreadSafeOutput.hpp"
 #include "components/Radar.hpp"
 #include "components/Missile.hpp"
+#include "components/DetectedTarget.hpp"
 
 #include <mutex>
 #include <nlohmann/json.hpp>
@@ -31,6 +32,9 @@ class SimulationWorld {
 
         bool addPiece(const json & message);
         bool removePiece(std::string id);
+        void reset();
+        void update();
+        void pause();
         json getPieceTotals() const;
         void resetPieceTotals();
         void updateRadarVis();
@@ -44,6 +48,7 @@ class SimulationWorld {
         SimulationOptions & options;
         std::vector<Radar> & radars;
         std::vector<Missile> & missiles;
+        std::vector<DetectedTarget> detectedTargets;
         SimulationMap map;                  // 2d map of the placed sprites
         SimulationTimer timer;              // stores execution time of simulation
         std::mutex timeMutex;       
