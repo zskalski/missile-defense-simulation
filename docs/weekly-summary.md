@@ -246,7 +246,6 @@ End:  7/10/2026
 | FD-003  | The frontend shall display radar detection ranges                                                                   | Completed |
 | FD-006  | The frontend shall allow the user to manually spawn a target.                                                       | Completed |
 
-
 **Notes / Decisions**
 
 - Timer, placement, and vertification logic must be moved to the backend. Frontend should be only visuals, backend should represent the true state.
@@ -256,16 +255,17 @@ End:  7/10/2026
 ### Friday
 
 **Work Completed**
+
 - Stuided CMake build system, WebSockets, and the Boost.Beast library
 - Designed communication system between frontend and backend
 - Began initial WebSocket Server implementation
 
 **Jira Items Worked On**
 
-| Jira ID | Title | Status |
-| ------- | ----- | ------ |
-|    WS-001     |   The backend shall provide a WebSocket connection for frontend communication.    |    In-progress    |
-|    WS-006     |   The backend shall reject malformed or invalid WebSocket messages without crashing    |    In-progress    |
+| Jira ID | Title                                                                             | Status      |
+| ------- | --------------------------------------------------------------------------------- | ----------- |
+| WS-001  | The backend shall provide a WebSocket connection for frontend communication.      | In-progress |
+| WS-006  | The backend shall reject malformed or invalid WebSocket messages without crashing | In-progress |
 
 **Notes / Decisions**
 
@@ -277,12 +277,13 @@ End:  7/10/2026
 - Messages will be sent using a json format.
 
 **Blockers**
- - Boost.Beast library is vast and complex
- - Orginally decided to have a stop() function in the WebSocketServer but this created many issues with the simulation thread being able to call stop() at any time. I tried to implement thread safe data, however this became too complex and I decided to simplify it by having one thread own the entire instance of the server.
+
+- Boost.Beast library is vast and complex
+- Orginally decided to have a stop() function in the WebSocketServer but this created many issues with the simulation thread being able to call stop() at any time. I tried to implement thread safe data, however this became too complex and I decided to simplify it by having one thread own the entire instance of the server.
 
 ---
 
-## Week 4 - Complete Backend Connection and Implement Minimum Viable Product
+## Week 4 - Complete Backend Connection
 
 **Dates:**
 Start:  7/13/2026
@@ -300,21 +301,251 @@ End:  7/17/2026
 ### Monday
 
 **Work Completed**
+
 - Completed WebSocketServer implementation
 - Fixed design issues from enabling two threads' access to WebSocketServer data
 - Completed basic network tests using json
 - Added error checks using try/catch blocks for json parsing and network errors
+- Created the first backend build structure and dependency setup
+- Created the first simulator entry point so the backend could be run as a program
+- Added queues for sending messages between backend threads
+- Connected the frontend socket code to the backend connection
+- Moved frontend message code into a seperate file so socket code only handles the connection
+- Updated the weekly log and cleaned unneeded planning/editor files from the repo
 
 **Jira Items Worked On**
 
-| Jira ID | Title | Status |
-| ------- | ----- | ------ |
-|    WS-001     |   The backend shall provide a WebSocket connection for frontend communication.    |    Completed    |
-|    WS-006     |   The backend shall reject malformed or invalid WebSocket messages without crashing    |    Completed    |
+| Jira ID | Title                                                                                     | Status      |
+| ------- | ----------------------------------------------------------------------------------------- | ----------- |
+| WS-001  | The backend shall provide a WebSocket connection for frontend communication.              | Completed   |
+| WS-004  | The frontend shall send user commands to the backend using structured WebSocket messages. | In-progress |
+| WS-006  | The backend shall reject malformed or invalid WebSocket messages without crashing         | Completed   |
+| DT-006  | The project shall include weekly summaries describing completed work and remaining work.  | In-progress |
 
 **Notes / Decisions**
 
+- Removed local editor settings and old planning files from git so the repo only tracks project files.
+- Split message code out of socket.js because the socket should only manage the connection, while message formatting and response handling should live somewhere else.
+
 **Blockers**
+
+### Tuesday
+
+*** N/A ***
+
+### Wednesday
+
+*** N/A ***
+
+### Thursday
+
+*** N/A ***
+
+### Friday
+
+**Work Completed**
+
+- Created the first backend options storage for user-changeable simulation settings
+- Added startup code for the backend connection server from inside the simulator
+- Updated the backend main function so it creates the simulator and starts the program through it
+- Updated build files so the new backend files compile with the rest of the project
+- Added an HTTP server so the frontend can be served from the backend
+- Added a script to build and run the project
+- Added protected output streams because the backend now prints from multiple threads
+- Updated the simulator to start both the page server and the backend connection server
+- Added browser launch behavior so running the backend opens the frontend page
+
+**Jira Items Worked On**
+
+| Jira ID | Title                                                                                         | Status      |
+| ------- | --------------------------------------------------------------------------------------------- | ----------- |
+| SC-003  | The system shall update the simulation using a tick rate toggleable by the user.              | In-progress |
+| SC-005  | The system shall support starting, pausing, resuming, resetting, and stopping the simulation. | In-progress |
+| WS-004  | The frontend shall send user commands to the backend using structured WebSocket messages.     | Completed   |
+
+**Notes / Decisions**
+
+- User options should live in the backend because the backend will be responsible for deciding how the simulation runs.
+- The simulator should own and start the major backend systems instead of spreading setup logic across main.
+- The frontend should be opened from the local backend instead of manually opening the html file, because the project is moving toward one run command for the full system.
+
+**Blockers**
+
+---
+
+## Week 5 - Backend State and Simulation Communication
+
+**Dates:**
+Start:  7/20/2026
+End:  7/24/2026
+
+### Weekly Goals
+
+- Implement backend message responses for frontend controls and user options
+- Move timer and placement logic to the backend
+- Move object totals and placement validation to the backend
+- Add backend data for radars and missiles
+- Send fuller world updates back to the frontend
+
+### Monday
+
+**Work Completed**
+
+- Added backend message routing so incoming frontend messages call the correct backend response
+- Added update request and update response messages between the frontend and backend
+- Connected the frontend to repeated backend update requests after the connection is ready
+- Updated the frontend clock display using backend response data
+- Connected backend incoming and outgoing message queues into the backend message flow
+
+**Jira Items Worked On**
+
+| Jira ID | Title                                                                                                                    | Status |
+| ------- | ------------------------------------------------------------------------------------------------------------------------ | ------ |
+| WS-002  | The backend shall send world-state updates to connected frontend clients.                                                | Done   |
+| WS-003  | World-state messages shall include simulation time, targets, tracks, radars, launchers, interceptors, and recent events. | Done   |
+| WS-004  | The frontend shall send user commands to the backend using structured WebSocket messages.                                | Done   |
+
+**Notes / Decisions**
+
+- The frontend should request updates from the backend instead of creating its own simulation state.
+- Message types should be mapped to handler functions so more request types can be added without filling the socket code with if-statements.
+
+**Blockers**
+
+### Tuesday
+
+*** N/A ***
+
+### Wednesday
+
+**Work Completed**
+
+- Connected start, pause, reset, automatic mode, radar visibility, and tick rate controls to backend messages
+- Added backend timer behavior so the backend controls simulation time
+- Created the first backend world state object to hold simulation state
+- Moved placement decisions into the backend so the frontend asks to place a piece and waits for the backend response
+- Added backend map storage and object storage for placed pieces
+- Updated frontend placement code so it responds to backend placement results
+
+**Jira Items Worked On**
+
+| Jira ID | Title                                                                                                                       | Status      |
+| ------- | --------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| SC-001  | The system shall simulate a 2D operational area.                                                                            | Done        |
+| SC-002  | The system shall maintain a central world state containing all active targets, radars, launchers, interceptors, and events. | In-progress |
+| SC-003  | The system shall update the simulation using a tick rate toggleable by the user.                                            | In-progress |
+| SC-004  | The system shall track simulation time in milliseconds.                                                                     | Done        |
+| SC-005  | The system shall support starting, pausing, resuming, resetting, and stopping the simulation.                               | Done        |
+| SC-007  | Each simulated entity shall have a unique ID, position, status, and update behavior.                                        | Done        |
+| WS-004  | The frontend shall send user commands to the backend using structured WebSocket messages.                                   | In-progress |
+| WS-005  | The backend shall validate all incoming user commands before applying them.                                                 | In-progress |
+| FD-004  | The frontend shall update entity positions using orld-state messages from the backend.                                      | Completed   |
+
+**Notes / Decisions**
+
+- Placement logic should not stay in the frontend because the backend must be the true source of what exists on the map.
+- The frontend can still create the visual piece, but the backend should decide if the placement is valid.
+
+**Blockers**
+
+### Thursday
+
+**Work Completed**
+
+- Moved object totals into the backend world state
+- Updated backend update messages to include piece totals and component data
+- Updated frontend info and map code to use the new backend update format
+- Added backend data structures for radar, missile, and detected target pieces
+- Added missile placement options on the frontend so the user can select a target and speed before placing a missile
+- Added placement validation for missiles without a target or speed
+- Connected radar visibility changes to backend radar data
+
+**Jira Items Worked On**
+
+| Jira ID | Title                                                                                                                       | Status      |
+| ------- | --------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| SC-002  | The system shall maintain a central world state containing all active targets, radars, launchers, interceptors, and events. | In-progress |
+| RD-001  | The system shall support zero or more simulated radar stations.                                                             | Completed   |
+| RD-002  | Each radar station shall have a configurable position, and detection range.                                                 | Completed   |
+| RD-003  | A radar station shall only detect targets within its configuraed detection range.                                           | In-progress |
+| DT-006  | The project shall include weekly summaries describing completed work and remaining work.                                    | In-progress |
+
+**Notes / Decisions**
+
+- Object count data should live in the backend with the world state, not in the frontend display code.
+- Missiles need extra placement data, so a small placement popup is needed before the frontend sends the placement request.
+
+**Blockers**
+
+### Friday
+
+*** N/A ***
+
+## Week 6 - MVP Simulation Behavior
+
+**Dates:**
+Start:  7/27/2026
+End:  7/31/2026
+
+### Weekly Goals
+
+*** N/A ***
+
+### Monday
+
+*** N/A ***
+
+### Tuesday
+
+*** N/A ***
+
+### Wednesday
+
+*** N/A ***
+
+### Thursday
+
+*** N/A ***
+
+### Friday
+
+*** N/A ***
+
+---
+
+## Week 7 - Final Implementation and Testing
+
+**Dates:**
+Start:  8/3/2026
+End:  8/7/2026
+
+### Weekly Goals
+
+*** N/A ***
+
+### Monday
+
+*** N/A ***
+
+### Tuesday
+
+*** N/A ***
+
+### Wednesday
+
+*** N/A ***
+
+### Thursday
+
+*** N/A ***
+
+### Friday
+
+*** N/A ***
+
+---
+
+## Daily Summary Example
 
 ### Day
 
@@ -327,15 +558,7 @@ End:  7/17/2026
 |         |       |        |
 |         |       |        |
 |         |       |        |
-|         |       |        |
-|         |       |        |
-|         |       |        |
-|         |       |        |
-|         |       |        |
-|         |       |        |
 
 **Notes / Decisions**
 
 **Blockers**
-
----
