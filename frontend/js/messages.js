@@ -108,7 +108,9 @@ function applyUpdate(message) {
     updateInterceptorMetric();
 
     // update missile locations
-    updateMissileLocation(message.payload.components.missiles);
+    const missiles = message.payload.components.missiles;
+    updateMissileLocation(missiles);
+    updateDefconFromMissiles(missiles);
 }
 
 
@@ -133,18 +135,34 @@ function sendSimulationResetRequest() {
 }
 
 function simulationStarted() {
+    simulationActive = true;
+
+    if (placedEnemyMissileBarrage > 0) {
+        activeMissileBarrage = true;
+        updateDefcon(1);
+    } else if (placedEnemyMissile > 0) {
+        updateDefcon(2);
+    } else {
+        updateDefcon(3);
+    }
+
     console.log("Simulation started.");
 }
 
 function simulationPaused() {
+    simulationActive = false;
+    updateDefcon(4);
     console.log("Simulation paused.");
 }
 
 function simulationReset() {
+    simulationActive = false;
+    activeMissileBarrage = false;
     resetMetrics();
     clearGrid();
     redrawCanvas(options);
     clearEventLog();
+    updateDefcon(4);
     console.log("Simulation reset.");
 }
 
@@ -286,8 +304,26 @@ function recieveSimulationPlacementResponse(message) {
 
     if (pendingPiece) {
         placePiece(pendingPiece);
+        updateDefconForPlacement(pendingPiece.dataset.type);
         pendingPieces.delete(pieceId);
     }
 
     console.log("Placement accepted by backend.");
+}
+
+function updateDefconForPlacement(pieceType) {
+    if (!simulationActive) {
+        if (pieceType == "enemy-missile-barrage") {
+            activeMissileBarrage = true;
+        }
+
+        return;
+    }
+
+    if (pieceType == "enemy-missile-barrage") {
+        activeMissileBarrage = true;
+        updateDefcon(1);
+    } else if (pieceType == "enemy-missile" && defcon > 2) {
+        updateDefcon(2);
+    }
 }

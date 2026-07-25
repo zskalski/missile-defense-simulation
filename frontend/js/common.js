@@ -19,3 +19,7 @@ let placedEnemyMissile = 0;
 let placedEnemyMissileBarrage = 0;
 let placedTree = 0;
 let placedLake = 0;
+
+let defcon = 4;
+let simulationActive = false;
+let activeMissileBarrage = false;

@@ -49,6 +49,30 @@
     color: rgb(128, 128, 128);
 }
 
+.alert-banner.defcon-4 {
+    color: rgb(128, 128, 128);
+    background-color: #232420;
+    box-shadow: 0 0 0 2px #3d3d39;
+}
+
+.alert-banner.defcon-3 {
+    color: green;
+    background-color: #172417;
+    box-shadow: 0 0 0 2px green;
+}
+
+.alert-banner.defcon-2 {
+    color: darkgoldenrod;
+    background-color: #2b2514;
+    box-shadow: 0 0 0 2px darkgoldenrod;
+}
+
+.alert-banner.defcon-1 {
+    color: red;
+    background-color: #2b1414;
+    box-shadow: 0 0 0 2px red;
+}
+
 .alert-banner .alert-label {
     justify-self: start;
     padding-top: 2px;

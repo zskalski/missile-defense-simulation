@@ -4,6 +4,8 @@ const timeMetric = document.getElementById("metrics-time");
 const targetMetric = document.getElementById("metrics-targets");
 const trackMetric = document.getElementById("metrics-tracks");
 const interceptorMetric = document.getElementById("metrics-interceptors");
+const alertBanner = document.querySelector(".alert-banner");
+const alertMessage = document.querySelector(".alert-message");
 
 let eventLogRows = 0;
 
@@ -75,4 +77,49 @@ function resetMetrics() {
     placedEnemyMissileBarrage = 0;
     placedTree = 0;
     placedLake = 0;
-} 
+}
+
+function updateDefcon(newDefcon) {
+    defcon = newDefcon;
+
+    alertBanner.classList.remove("defcon-1", "defcon-2", "defcon-3", "defcon-4");
+    alertBanner.classList.add(`defcon-${defcon}`);
+    alertMessage.textContent = getDefconMessage(defcon);
+}
+
+function updateDefconFromMissiles(missiles) {
+    if (!simulationActive) {
+        return;
+    }
+
+    const activeMissiles = missiles.filter(missile => !missile.blownUp);
+
+    if (activeMissileBarrage && activeMissiles.length > 0) {
+        updateDefcon(1);
+        return;
+    }
+
+    activeMissileBarrage = false;
+
+    if (activeMissiles.length > 0) {
+        updateDefcon(2);
+    } else {
+        updateDefcon(3);
+    }
+}
+
+function getDefconMessage(level) {
+    switch (level) {
+        case 1:
+            return "DEFCON 1 - MISSILE BARRAGE INBOUND";
+        case 2:
+            return "DEFCON 2 - MISSILE INBOUND";
+        case 3:
+            return "DEFCON 3 - SIMULATION ACTIVE";
+        case 4:
+        default:
+            return "DEFCON 4 - HEIGHTENED ALERT";
+    }
+}
+
+updateDefcon(defcon);

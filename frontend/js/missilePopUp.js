@@ -5,6 +5,9 @@ let missileSpeedTooltip = null;
 let missilePendingPiece = null;
 let missileSelectedTargetID = 0;
 let missileSelectedSpeed = 0;
+let missilePopUpDragging = false;
+let missilePopUpDragOffsetX = 0;
+let missilePopUpDragOffsetY = 0;
 
 function createMissilePopUp() {
     missilePopUp = document.createElement("div");
@@ -34,6 +37,9 @@ function createMissilePopUp() {
     const title = document.createElement("h2");
     title.textContent = "Missile Options";
     title.style.marginTop = "0px";
+    title.style.cursor = "move";
+    title.style.userSelect = "none";
+    title.addEventListener("pointerdown", startMissilePopUpDrag);
 
     const targetLabel = document.createElement("p");
     targetLabel.textContent = "Target";
@@ -88,6 +94,38 @@ function createMissilePopUp() {
     updateSliderTooltip(missileSpeedSlider, missileSpeedTooltip);
 }
 
+function startMissilePopUpDrag(event) {
+    missilePopUpDragging = true;
+
+    const popupRect = missilePopUp.getBoundingClientRect();
+    missilePopUpDragOffsetX = event.clientX - popupRect.left;
+    missilePopUpDragOffsetY = event.clientY - popupRect.top;
+
+    missilePopUp.style.transform = "none";
+    missilePopUp.setPointerCapture(event.pointerId);
+    missilePopUp.addEventListener("pointermove", dragMissilePopUp);
+    missilePopUp.addEventListener("pointerup", stopMissilePopUpDrag);
+    missilePopUp.addEventListener("pointercancel", stopMissilePopUpDrag);
+}
+
+function dragMissilePopUp(event) {
+    if (!missilePopUpDragging) {
+        return;
+    }
+
+    missilePopUp.style.left = `${event.clientX - missilePopUpDragOffsetX}px`;
+    missilePopUp.style.top = `${event.clientY - missilePopUpDragOffsetY}px`;
+}
+
+function stopMissilePopUpDrag(event) {
+    missilePopUpDragging = false;
+
+    missilePopUp.releasePointerCapture(event.pointerId);
+    missilePopUp.removeEventListener("pointermove", dragMissilePopUp);
+    missilePopUp.removeEventListener("pointerup", stopMissilePopUpDrag);
+    missilePopUp.removeEventListener("pointercancel", stopMissilePopUpDrag);
+}
+
 function openMissilePopUp(piece) {
     const protectedTargets = mapArea.querySelectorAll('[data-type="protected-target"]');
 
@@ -107,6 +145,10 @@ function openMissilePopUp(piece) {
     populateMissileTargetList();
     missileSpeedSlider.value = "10";
     updateSliderTooltip(missileSpeedSlider, missileSpeedTooltip);
+
+    if (missilePopUp.style.left == "50%") {
+        missilePopUp.style.transform = "translate(-50%, -50%)";
+    }
 
     missilePopUp.style.display = "block";
 }
