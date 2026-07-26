@@ -18,6 +18,7 @@ Missile::Missile(int x_cord, int y_cord, int spd, int x_dest, int y_dest, std::s
       x_original(x_cord),
       y_original(y_cord),
       blownUp(false),
+      blownUpReported(false),
       target_id(target),
       id(identity) {}
 
@@ -50,9 +51,15 @@ double Missile::getDirectionDegrees() const {
     return degrees;
 }
 
+std::string Missile::getID() const {return id;}
+
 std::string Missile::getTargetID() {return target_id;}
 
 bool Missile::isBlownUp() {return blownUp;}
+
+bool Missile::wasBlownUpReported() {return blownUpReported;}
+
+void Missile::markBlownUpReported() {blownUpReported = true;}
 
 void Missile::advance() {
 

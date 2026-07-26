@@ -73,6 +73,7 @@ function processMessage(message) {
 // 50 ms Updates: ---------------------
 
 let updateRequestID;
+let knownDetections = new Set();
 
 function handleReadyMessage(message) {
     if (updateRequestID !== undefined) {
@@ -106,11 +107,26 @@ function applyUpdate(message) {
     updateTargetMetric();
     updateTrackMetric(message.payload.tracks.total);
     updateInterceptorMetric();
+    logNewDetections(message.payload.tracks.detectedTargets);
 
     // update missile locations
     const missiles = message.payload.components.missiles;
     updateMissileLocation(missiles);
     updateDefconFromMissiles(missiles);
+}
+
+function logNewDetections(detectedTargets) {
+    for (const target of detectedTargets) {
+        const detectionID = `${target.position.x},${target.position.y},${target.speed}`;
+
+        if (knownDetections.has(detectionID)) {
+            continue;
+        }
+
+        knownDetections.add(detectionID);
+        console.log("New detection:", target);
+        addToEventLog(`DETECTION: target detected at (x: ${target.position.x}, y: ${target.position.y})`);
+    }
 }
 
 
@@ -158,6 +174,7 @@ function simulationPaused() {
 function simulationReset() {
     simulationActive = false;
     activeMissileBarrage = false;
+    knownDetections.clear();
     resetMetrics();
     clearGrid();
     redrawCanvas(options);
@@ -271,10 +288,7 @@ function sendSimulationPlacementRequest(piece) {
                 ...basePayload,
                 x: x,
                 y: y,
-                target_id: piece.dataset.target_id,
-                speed: Number(piece.dataset.speed),
-                x_dest: Number(piece.dataset.x_dest),
-                y_dest: Number(piece.dataset.y_dest)
+                missile_count: Number(piece.dataset.missile_count)
             };
             break;
 

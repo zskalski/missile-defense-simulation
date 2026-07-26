@@ -224,5 +224,6 @@ for (let i = 0; i < draggableSprites.length; i++) {
 
     draggableSprites[i].addEventListener("dragend", () => {
         draggedSprite = null;
+        clearRadarVisibilityPreview();
     });
 }

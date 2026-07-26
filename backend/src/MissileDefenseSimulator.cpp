@@ -104,6 +104,7 @@ void MissileDefenseSimulator::gameLoop() {
 
 void MissileDefenseSimulator::sendUpdate(const json & message) {
     auto t = world.getTime();
+    auto detectedTargets = world.getDetectedTargets();
     
     json updateJson = {
         {"type", "update.response"},
@@ -115,7 +116,8 @@ void MissileDefenseSimulator::sendUpdate(const json & message) {
             }},
             {"totalPieces", world.getPieceTotals()},
             {"tracks", {
-                {"total", 0}
+                {"total", detectedTargets.size()},
+                {"detectedTargets", detectedTargets}
             }},
             {"components", {
                 {"radars", radars},

@@ -1,5 +1,14 @@
 #include "SimulationObject.hpp"
 
+namespace {
+    constexpr int mapCellCount = 16;
+    constexpr int mapPixelSize = 940;
+
+    int cellCenterCoordinate(int index) {
+        return static_cast<int>(((index + 0.5) * mapPixelSize) / mapCellCount);
+    }
+}
+
 const std::unordered_map<std::string, SimulationObject::SimulationObjectType> SimulationObject::simulationTypes = {
     {"command-center", SimulationObjectType::COMMAND_CENTER},
     {"radar", SimulationObjectType::RADAR},
@@ -8,7 +17,8 @@ const std::unordered_map<std::string, SimulationObject::SimulationObjectType> Si
     {"enemy-missile", SimulationObjectType::ENEMY_MISSILE},
     {"enemy-missile-barrage", SimulationObjectType::ENEMY_MISSILE_BARRAGE},
     {"tree", SimulationObjectType::TREE},
-    {"lake", SimulationObjectType::LAKE}
+    {"lake", SimulationObjectType::LAKE},
+    {"missile-barrage-missile", SimulationObjectType::ENEMY_MISSILE}
 };
 
 SimulationObject::SimulationObjectType SimulationObject::findSimulationType(const std::string& type) {
@@ -54,10 +64,47 @@ bool SimulationObject::setType(const std::string& type) {
 SimulationObject::SimulationObject() {
     id = "";
     type = SimulationObjectType::NONE;
+    row = -1;
+    col = -1;
+    x = -1;
+    y = -1;
 }
 
-SimulationObject::SimulationObject(std::string identification, SimulationObjectType t) : id(identification), type(t) {}
+SimulationObject::SimulationObject(std::string identification, SimulationObjectType t)
+    : id(identification),
+      type(t),
+      row(-1),
+      col(-1),
+      x(-1),
+      y(-1) {}
 
 SimulationObject::SimulationObjectType SimulationObject::getType() {
     return this->type;
+}
+
+int SimulationObject::getRow() {
+    return row;
+}
+
+int SimulationObject::getCol() {
+    return col;
+}
+
+int SimulationObject::getX() {
+    return x;
+}
+
+int SimulationObject::getY() {
+    return y;
+}
+
+std::string SimulationObject::getID() {
+    return id;
+}
+
+void SimulationObject::setGridPosition(int row, int col) {
+    this->row = row;
+    this->col = col;
+    this->x = cellCenterCoordinate(col);
+    this->y = cellCenterCoordinate(row);
 }

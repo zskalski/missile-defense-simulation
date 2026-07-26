@@ -1,5 +1,7 @@
 #pragma once
 
+#include <nlohmann/json.hpp>
+
 class DetectedTarget {
 
     public:
@@ -7,6 +9,9 @@ class DetectedTarget {
         int getX();
         int getY();
         int getSpeed();
+
+        friend void to_json(nlohmann::json& j, const DetectedTarget& target);
+
     private:
         int x;
         int y;

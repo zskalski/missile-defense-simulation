@@ -15,8 +15,11 @@ class Missile {
         int getXDestination();
         int getYDestination();
         double getDirectionDegrees() const;
+        std::string getID() const;
         std::string getTargetID();
         bool isBlownUp();
+        bool wasBlownUpReported();
+        void markBlownUpReported();
 
         void advance();
 
@@ -33,6 +36,7 @@ class Missile {
         int x_original;
         int y_original;
         bool blownUp;
+        bool blownUpReported;
         std::string target_id;
         std::string id;
 };

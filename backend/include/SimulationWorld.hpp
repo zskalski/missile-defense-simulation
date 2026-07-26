@@ -36,12 +36,14 @@ class SimulationWorld {
         void update();
         void pause();
         json getPieceTotals() const;
+        std::vector<DetectedTarget> getDetectedTargets() const;
         void resetPieceTotals();
         void updateRadarVis();
 
     private:
         void addPieceToTotals(const std::string & type);
         void addPieceToVector(const json & message);
+        void spawnMissileBarrage(int missileNum, const std::string & targetID);
 
         ThreadSafeOutput & consoleOut;
         ThreadSafeOutput & consoleErr;

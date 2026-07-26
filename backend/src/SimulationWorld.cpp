@@ -1,4 +1,15 @@
 #include "SimulationWorld.hpp"
+#include <algorithm>
+
+namespace {
+    constexpr int mapCellCount = 16;
+    constexpr int mapPixelSize = 940;
+    constexpr int defaultBarrageMissileSpeed = 10;
+
+    int cellCenterCoordinate(int index) {
+        return static_cast<int>(((index + 0.5) * mapPixelSize) / mapCellCount);
+    }
+}
 
 SimulationWorld::SimulationWorld(
     ThreadSafeOutput & output,
@@ -53,17 +64,31 @@ bool SimulationWorld::addPiece(const json & message) {
     int row = position.at("row").get<int>();
     int col = position.at("column").get<int>();
 
-    if ((type == "enemy-missile" || type == "enemy-missile-barrage") && 
-    (payload.at("target_id") == "0" || payload.at("speed").get<int>() == 0 || payload.at("x_dest").get<int>() == 0 || payload.at("y_dest").get<int>() == 0)) {
+    // must ensure missile has valid target before allowing placement
+    if (type == "enemy-missile" &&
+        (payload.at("target_id") == "0" || payload.at("speed").get<int>() == 0 || payload.at("x_dest").get<int>() == 0 || payload.at("y_dest").get<int>() == 0)) {
         // reject missiles that do not have destination targets
         return false;
-    } 
+    }
+
+    if (type == "enemy-missile-barrage" && payload.at("missile_count") < 2) {
+        return false;
+    }
+
+    // only one command center is allowed
+    if (type == "command-center" && totalCommandCenters > 0) {
+        return false;
+    }
 
     const bool placed = map.addObject(id, type, row, col);
 
     if (placed) {
         addPieceToTotals(type);
         addPieceToVector(message);
+
+        if (type == "enemy-missile-barrage") {
+            spawnMissileBarrage(payload.at("missile_count").get<int>(), id);
+        }
     }
 
     return placed;
@@ -89,8 +114,22 @@ void SimulationWorld::pause() {
 }
 
 void SimulationWorld::update() {
+    for (auto missile = missiles.begin(); missile != missiles.end();) {
+        if (missile->isBlownUp() && missile->wasBlownUpReported()) {
+         missile = missiles.erase(missile);
+        } else {
+            ++missile;
+        }
+    }
+
     for (auto & missile : missiles) {
+        const bool wasBlownUp = missile.isBlownUp();
+
         missile.advance();
+
+        if (!wasBlownUp && missile.isBlownUp()) {
+            map.removeObject(missile.getID());
+        }
     }
 
     detectedTargets.clear();
@@ -107,6 +146,12 @@ void SimulationWorld::update() {
             }
         }
     }
+
+    for (auto & missile : missiles) {
+        if (missile.isBlownUp()) {
+            missile.markBlownUpReported();
+        }
+    }
 }
 
 json SimulationWorld::getPieceTotals() const {
@@ -120,6 +165,10 @@ json SimulationWorld::getPieceTotals() const {
         {"trees", totalTrees},
         {"lakes", totalLakes}
     };
+}
+
+std::vector<DetectedTarget> SimulationWorld::getDetectedTargets() const {
+    return detectedTargets;
 }
 
 void SimulationWorld::resetPieceTotals() {
@@ -179,4 +228,28 @@ void SimulationWorld::addPieceToVector(const json & message) {
         );
         consoleOut.write("Recieved enemy-missile placement with these values:\n\tx: ", payload.at("x").get<int>(), "\n\ty: ", payload.at("y").get<int>(), "\n\tspeed: ", payload.at("speed").get<int>(), "\n\tx_dest: ", payload.at("x_dest").get<int>(), "\n\ty_dest: ", payload.at("y_dest").get<int>(), "\n\ttarget_id: ", payload.at("target_id").get<std::string>(), "\n\tid: ", id, '\n');
     }
+}
+
+void SimulationWorld::spawnMissileBarrage(int missileNum, const std::string & targetID) {
+    const auto spawnedMissiles = map.spawnMissileBarrage(missileNum);
+    auto protectedTargets = map.getProtectedTargets();
+
+    for (const auto & spawnedMissile : spawnedMissiles) {
+
+        // get a random protected target
+        const int random = std::rand() % protectedTargets.size();
+        auto selectedTarget = protectedTargets[random];
+
+        missiles.emplace_back(
+            cellCenterCoordinate(spawnedMissile.col),
+            cellCenterCoordinate(spawnedMissile.row),
+            defaultBarrageMissileSpeed,
+            selectedTarget.getX(),
+            selectedTarget.getY(),
+            selectedTarget.getID(),
+            spawnedMissile.id
+        );
+    }
+
+    totalEnemyMissiles += spawnedMissiles.size();
 }

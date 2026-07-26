@@ -79,10 +79,17 @@ function clearGrid() {
 // RADAR VISIBILITY
 
 function drawRadarVisibility() {
+    redrawCanvas();
+
     radars = mapArea.querySelectorAll('[data-type="radar"]');
     for(let i = 0; i < radars.length; i++) {
         drawSingleRadarVisibility(radars[i]);
     }
+}
+
+function clearRadarVisibilityPreview() {
+    redrawCanvas();
+    canDrawRadars = true;
 }
 
 function drawSingleRadarVisibility(piece) {
@@ -146,7 +153,7 @@ mapArea.addEventListener("drop", event => {
         sendSimulationPlacementRequest(newPiece);
     }
 
-    canDrawRadars = true;
+    clearRadarVisibilityPreview();
 });
 
 function getNewPieceID(piece) {
@@ -327,7 +334,7 @@ function updateMissileLocation(missiles) {
     const spriteCenterOffset = 32;
 
     for (const missile of missiles) {
-        const missileElement = document.getElementById(missile.id);
+        let missileElement = document.getElementById(missile.id);
 
         const id = missile.id;
         const x = missile.position.x;
@@ -336,7 +343,7 @@ function updateMissileLocation(missiles) {
         const blownUp = missile.blownUp;
 
         if (!missileElement) {
-            continue;
+            missileElement = createMissileElementFromUpdate(missile);
         }
 
         missileElement.style.left = `${x - spriteCenterOffset}px`;
@@ -357,6 +364,32 @@ function updateMissileLocation(missiles) {
             applyMissileImpact(missile, missileElement);
         }
     }
+}
+
+function createMissileElementFromUpdate(missile) {
+    const missileTemplate = document.getElementById("enemy-missile-template");
+    const missileElement = missileTemplate.cloneNode(true);
+    const x = missile.position.x;
+    const y = missile.position.y;
+
+    missileElement.id = missile.id;
+    missileElement.dataset.type = "enemy-missile";
+    missileElement.dataset.row = Math.floor(y / cellHeight);
+    missileElement.dataset.col = Math.floor(x / cellWidth);
+    missileElement.dataset.placed_x = x;
+    missileElement.dataset.placed_y = y;
+    missileElement.classList.replace("sprite-draggable", "sprite-placed");
+    missileElement.style.position = "absolute";
+
+    missileElement.addEventListener("click", () => {
+        showPieceTooltip(missileElement);
+        showObjectDetails(missileElement);
+    });
+    missileElement.addEventListener("pointerleave", () => hidePieceTooltip(missileElement));
+
+    mapArea.appendChild(missileElement);
+
+    return missileElement;
 }
 
 function applyMissileImpact(missile, missileElement) {
